@@ -1,0 +1,16 @@
+export enum DAY {
+  SUNDAY,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY,
+}
+
+export enum RSVP_Status {
+  GOING = "GOING",
+  NOT_GOING = "NOT_GOING",
+  MAYBE = "MAYBE",
+  WAITING_LIST = "WAITING_LIST",
+}
