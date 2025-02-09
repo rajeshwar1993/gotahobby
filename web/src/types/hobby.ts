@@ -1,3 +1,5 @@
+import { Bio, Entity, GlanceUser, Picture, Tag } from "@/types";
+
 export type HobbyBasic = Entity & {
   name: string;
   coverPicture: Picture;
