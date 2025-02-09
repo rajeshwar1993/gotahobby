@@ -2,13 +2,21 @@ import { APIResponse, CustomError } from "@/types/apiTypes";
 import { NextResponse } from "next/server";
 
 export const createSuccessResponse = <T>(
-  data: T
+  data: T,
+  options?: {
+    status: number;
+  }
 ): NextResponse<APIResponse<T>> => {
-  return NextResponse.json({
-    isSuccess: true,
-    data,
-    error: null,
-  });
+  return NextResponse.json(
+    {
+      isSuccess: true,
+      data,
+      error: null,
+    },
+    {
+      ...options,
+    }
+  );
 };
 
 export const createErrorResponse = <T>(

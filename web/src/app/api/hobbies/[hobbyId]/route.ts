@@ -5,7 +5,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "../../utils/response";
-import { APIResponse, OKResponse } from "@/types/apiTypes";
+import { APIResponse,OKResponse}> from "@/types/apiTypes";
 import { Hobby, NewHobbyResponse } from "@/types/hobby";
 export async function GET({
   params,
@@ -22,10 +22,9 @@ export async function GET({
 
     // fetch data from DB
     const dbHandler = DBHandler.get();
+    const hobby = await dbHandler.getHobby(hobbyId);
 
     // TODO: validate response
-
-    const hobby = await dbHandler.getHobby(hobbyId);
 
     return createSuccessResponse(hobby);
   } catch (error: unknown) {
@@ -54,10 +53,15 @@ export async function POST(
       hobbyName?.toString()
     );
 
-    return createSuccessResponse({
-      uuid: newHobbyUUID,
-      name: hobbyName?.toString() || "",
-    });
+    return createSuccessResponse(
+      {
+        uuid: newHobbyUUID,
+        name: hobbyName?.toString() || "",
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error: unknown) {
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
@@ -69,7 +73,7 @@ export async function POST(
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ hobbyId: string }> }
-): Promise<NextResponse<APIResponse<OKResponse>>> {
+): Promise<NextResponse<OKResponse>> {
   const errorIdentifier = "Update Hobby";
   try {
     const hobbyId = (await params).hobbyId;
@@ -78,6 +82,8 @@ export async function PATCH(
     const hobbyName = formData.get("name");
 
     // TODO: validate data
+
+    // TODO: validate authorization
 
     // create Hobby in DB
     const dbHandler = DBHandler.get();
@@ -98,16 +104,18 @@ export async function DELETE({
   params,
 }: {
   params: Promise<{ hobbyId: string }>;
-}): Promise<NextResponse<APIResponse<OKResponse>>> {
+}): Promise<NextResponse<OKResponse>> {
   const errorIdentifier = "Update Hobby";
   try {
     const hobbyId = (await params).hobbyId;
 
     // TODO: validate data
 
+        // TODO: validate authorization
+
     // create Hobby in DB
     const dbHandler = DBHandler.get();
-    const response = await dbHandler.deleteHobby(hobbyId);
+    await dbHandler.deleteHobby(hobbyId);
 
     return createSuccessResponse({
       operation: "OK",

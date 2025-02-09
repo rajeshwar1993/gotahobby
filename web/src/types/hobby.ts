@@ -1,9 +1,10 @@
-import { Bio, Entity, GlanceUser, Picture, Tag } from "@/types";
+import { Bio, Entity, GlanceUser, Picture, Tag, TimeStats } from "@/types";
 
-export type HobbyBasic = Entity & {
-  name: string;
-  coverPicture: Picture;
-};
+export type HobbyBasic = Entity &
+  TimeStats & {
+    name: string;
+    coverPicture: Picture;
+  };
 
 export type NewHobbyResponse = Entity & {
   name: string;

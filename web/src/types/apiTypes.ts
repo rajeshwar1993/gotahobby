@@ -1,6 +1,6 @@
-export type OKResponse = {
+export type OKResponse = APIResponse<{
   operation: "OK";
-};
+}>;
 
 export type Result = {
   isSuccess: boolean;

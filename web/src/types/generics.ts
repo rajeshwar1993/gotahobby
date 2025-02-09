@@ -2,6 +2,10 @@ export type Entity = {
   uuid: string;
 };
 
+export type TimeStats = {
+  createdAtUTC: string;
+};
+
 export type Bio = {
   text: string;
 };
