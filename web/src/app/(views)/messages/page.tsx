@@ -76,7 +76,7 @@ export default function MessagesPage() {
     );
 
   return (
-    <div className="container max-w-2xl mx-auto px-4 py-8 flex flex-col h-[calc(100vh-4.5rem)]">
+    <div className="flex flex-col h-[calc(100vh-4.5rem)]">
       <MessagesHeader onSearch={setSearchQuery} onFilter={setFilter} />
 
       <ScrollArea className="flex-1">

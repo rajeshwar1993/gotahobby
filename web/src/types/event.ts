@@ -50,7 +50,7 @@ export type NotificationType =
   | "message"
   | "system";
 
-export interface Notification {
+export type Notification = {
   id: string;
   type: NotificationType;
   title: string;
@@ -59,4 +59,4 @@ export interface Notification {
   read: boolean;
   actionUrl?: string;
   image?: string;
-}
+};

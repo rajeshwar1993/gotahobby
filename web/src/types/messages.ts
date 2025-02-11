@@ -1,5 +1,5 @@
 // types/messages.ts
-export interface Message {
+export type Message = {
   id: string;
   senderId: string;
   senderName: string;
@@ -9,4 +9,4 @@ export interface Message {
   unread: boolean;
   eventTitle?: string;
   online?: boolean;
-}
+};

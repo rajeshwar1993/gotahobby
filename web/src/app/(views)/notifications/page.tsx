@@ -5,6 +5,7 @@ import { NotificationItem } from "./notification-item";
 import { NotificationsFilter } from "./notifications-filter";
 import { Button } from "@/components/ui/button";
 import type { Notification } from "@/types";
+import { NotificationsHeader } from "./notifications-header";
 
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
@@ -60,19 +61,8 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="container max-w-2xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">Notifications</h1>
-        <div className="flex items-center gap-4">
-          <NotificationsFilter
-            selectedFilter={filter}
-            onFilterChange={setFilter}
-          />
-          <Button variant="ghost" size="sm" onClick={markAllAsRead}>
-            Mark all as read
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-12">
+      <NotificationsHeader />
 
       <div className="space-y-2">
         {filteredNotifications.map((notification) => (

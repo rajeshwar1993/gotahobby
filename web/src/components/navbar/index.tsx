@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <header className="border-b">
+    <header className="sticky top-0 bg-background border-b z-[1]">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <h1 className="text-xl font-semibold">Got a Hobby</h1>
 

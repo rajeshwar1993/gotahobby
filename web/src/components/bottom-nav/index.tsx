@@ -13,8 +13,8 @@ const navItems = [
     icon: Home,
   },
   {
-    name: "Connections",
-    href: "/connections",
+    name: "Friends",
+    href: "/friends",
     icon: Users,
   },
   {
