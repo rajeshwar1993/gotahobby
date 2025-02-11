@@ -6,15 +6,15 @@ import {
   createSuccessResponse,
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
-import { Hobby, NewHobbyResponse } from "@/types/hobby";
+import { Event, NewEventResponse } from "@/types";
 export async function GET({
   params,
 }: {
-  params: Promise<{ hobbyId: string }>;
-}): Promise<NextResponse<APIResponse<Hobby>>> {
+  params: Promise<{ eventId: string }>;
+}): Promise<NextResponse<APIResponse<Event>>> {
   const errorIdentifier = "GET hobby by ID";
   try {
-    const hobbyId = (await params).hobbyId;
+    const eventId = (await params).eventId;
 
     // TODO: authenticate request
 
@@ -22,11 +22,11 @@ export async function GET({
 
     // fetch data from DB
     const dbHandler = DBHandler.get();
-    const hobby = await dbHandler.getHobby(hobbyId);
+    const event = await dbHandler.getEvent(eventId);
 
     // TODO: validate response
 
-    return createSuccessResponse(hobby);
+    return createSuccessResponse(event);
   } catch (error: unknown) {
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
@@ -37,26 +37,23 @@ export async function GET({
 
 export async function POST(
   request: NextRequest
-): Promise<NextResponse<APIResponse<NewHobbyResponse>>> {
+): Promise<NextResponse<APIResponse<NewEventResponse>>> {
   const errorIdentifier = "Create new Hobby";
   try {
     const formData = await request.formData();
-    const hobbyName = formData.get("name");
-    const newHobbyUUID = "1111-1111"; // TODO: create new hobby id
+    const eventName = formData.get("name");
+    const newEventUUID = "1111-1111"; // TODO: create new Event id
 
     // TODO: validate data
 
-    // create Hobby in DB
+    // create Event in DB
     const dbHandler = DBHandler.get();
-    const response = await dbHandler.createHobby(
-      newHobbyUUID,
-      hobbyName?.toString()
-    );
+    await dbHandler.createEvent(newEventUUID, eventName?.toString());
 
     return createSuccessResponse(
       {
-        uuid: newHobbyUUID,
-        name: hobbyName?.toString() || "",
+        uuid: newEventUUID,
+        name: eventName?.toString() || "",
       },
       {
         status: 201,
@@ -72,22 +69,25 @@ export async function POST(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ hobbyId: string }> }
+  { params }: { params: Promise<{ eventId: string }> }
 ): Promise<NextResponse<OKResponse>> {
-  const errorIdentifier = "Update Hobby";
+  const errorIdentifier = "Update event";
   try {
-    const hobbyId = (await params).hobbyId;
+    const eventId = (await params).eventId;
     const formData = await request.formData();
     const uuid = formData.get("uuid");
-    const hobbyName = formData.get("name");
+    const eventName = formData.get("name");
 
     // TODO: validate data
 
     // TODO: validate authorization
 
-    // create Hobby in DB
+    // create Event in DB
     const dbHandler = DBHandler.get();
-    const response = await dbHandler.updateHobby(uuid, hobbyName?.toString());
+    const response = await dbHandler.updateEvent(
+      eventId,
+      eventName?.toString()
+    );
 
     return createSuccessResponse({
       operation: "OK",
@@ -103,11 +103,11 @@ export async function PATCH(
 export async function DELETE({
   params,
 }: {
-  params: Promise<{ hobbyId: string }>;
+  params: Promise<{ eventId: string }>;
 }): Promise<NextResponse<OKResponse>> {
   const errorIdentifier = "Update Hobby";
   try {
-    const hobbyId = (await params).hobbyId;
+    const eventId = (await params).eventId;
 
     // TODO: validate data
 
@@ -115,7 +115,7 @@ export async function DELETE({
 
     // create Hobby in DB
     const dbHandler = DBHandler.get();
-    await dbHandler.deleteHobby(hobbyId);
+    await dbHandler.deleteEvent(eventId);
 
     return createSuccessResponse({
       operation: "OK",

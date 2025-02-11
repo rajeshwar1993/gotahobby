@@ -24,3 +24,15 @@ export type GlanceUser = Entity & {
   name: string;
   picture: Picture;
 };
+
+export type EventLocation = {
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+};
