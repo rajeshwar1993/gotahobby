@@ -1,9 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell } from "lucide-react";
 import Image from "next/image";
 
-export default function Navbar() {
+export default async function Navbar() {
   return (
     <header className="sticky top-0 bg-background border-b z-[1]">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
