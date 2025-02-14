@@ -4,6 +4,7 @@ export type Entity = {
 
 export type TimeStats = {
   createdAtUTC: string;
+  lastLoginAtUTC?: string;
 };
 
 export type Bio = {
