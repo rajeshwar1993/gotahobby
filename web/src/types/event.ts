@@ -3,7 +3,7 @@ import {
   Entity,
   GlanceUser,
   Picture,
-  Price,
+  CurrencyAmount,
   Tag,
   TimeStats,
 } from "./generics";
@@ -109,6 +109,6 @@ export type Event = EventBasic & {
   photos: Picture[];
   capacity: number;
   status: EventStatus;
-  price: Price;
+  fee: CurrencyAmount;
   isPublic: boolean;
 };
