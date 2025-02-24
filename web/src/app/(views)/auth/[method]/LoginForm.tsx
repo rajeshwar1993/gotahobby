@@ -3,14 +3,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Lock } from "lucide-react";
 import { loginAction } from "../loignAction";
@@ -86,9 +78,9 @@ const LoginForm = () => {
 
         {/* Form Fields */}
         <div className="space-y-4">
-          <FormError error={errors?._form?.[0]} />
           <EmailInput error={errors?.email?.[0]} />
           <PasswordInput error={errors?.password?.[0]} />
+          <FormError error={errors?._form?.[0]} />
         </div>
 
         {/* Submit Button */}
