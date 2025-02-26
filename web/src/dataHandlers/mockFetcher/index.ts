@@ -16,4 +16,10 @@ export class MockDataHandler implements DBHandlerType {
 
     return response.data;
   }
+
+  async getEvent(eventId: String): Promise<Event> {
+    const response = await axios.get("http://localhost:3090/api/hobby");
+
+    return response.data;
+  }
 }

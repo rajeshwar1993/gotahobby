@@ -7,14 +7,19 @@ import {
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
 import { Hobby, NewHobbyResponse } from "@/types/hobby";
-export async function GET({
-  params,
-}: {
-  params: Promise<{ hobbyId: string }>;
-}): Promise<NextResponse<APIResponse<Hobby>>> {
+
+export async function GET(
+  request: Request,
+  {
+    params,
+  }: {
+    params: Promise<{ hobbyId: string }>;
+  }
+): Promise<NextResponse<APIResponse<Hobby>>> {
   const errorIdentifier = "GET hobby by ID";
   try {
     const hobbyId = (await params).hobbyId;
+    console.log(hobbyId);
 
     // TODO: authenticate request
 
@@ -28,6 +33,7 @@ export async function GET({
 
     return createSuccessResponse(hobby);
   } catch (error: unknown) {
+    console.log(error);
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
     }

@@ -7,11 +7,15 @@ import {
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
 import { Event, NewEventResponse } from "@/types";
-export async function GET({
-  params,
-}: {
-  params: Promise<{ eventId: string }>;
-}): Promise<NextResponse<APIResponse<Event>>> {
+
+export async function GET(
+  request: Request,
+  {
+    params,
+  }: {
+    params: Promise<{ eventId: string }>;
+  }
+): Promise<NextResponse<APIResponse<Event>>> {
   const errorIdentifier = "GET hobby by ID";
   try {
     const eventId = (await params).eventId;
@@ -21,13 +25,14 @@ export async function GET({
     // TODO: validate input params
 
     // fetch data from DB
-    const dbHandler = DBHandler.get();
+    const dbHandler = await DBHandler.get("supabase");
     const event = await dbHandler.getEvent(eventId);
 
     // TODO: validate response
 
     return createSuccessResponse(event);
   } catch (error: unknown) {
+    console.log(error);
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
     }

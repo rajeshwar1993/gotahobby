@@ -30,7 +30,7 @@ export const ImageModal = ({
           <X className="h-6 w-6" />
         </Button>
         <img
-          src={image.url}
+          src={image.src}
           alt="Full screen view"
           className="max-h-[90vh] max-w-[90vw] object-contain"
           onClick={(e) => e.stopPropagation()}

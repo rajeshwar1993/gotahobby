@@ -16,4 +16,9 @@ export class FirebaseHandler implements DBHandlerType {
 
     return response.data;
   }
+  async getEvent(): Promise<Event> {
+    const response = await axios.get("http://localhost:3090/api/hobby");
+
+    return response.data;
+  }
 }

@@ -1,11 +1,8 @@
-"use client";
-
 import { CalendarIcon, MapPinIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Gallery } from "@/components/image-gallery";
-import { Comments } from "@/components/comments-section";
 
 // Event Details Component
 const EventDetails = ({ event }) => (
@@ -28,7 +25,7 @@ const EventDetails = ({ event }) => (
 );
 
 // Sticky Join Button Component
-const StickyJoinButton = ({ price }) => (
+const StickyJoinButton = ({ price }: { price: number }) => (
   <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 shadow-lg z-40">
     <div className="mx-auto max-w-4xl flex justify-between items-center">
       <span className="text-lg font-semibold">Price: ${price}</span>
@@ -40,7 +37,11 @@ const StickyJoinButton = ({ price }) => (
 );
 
 // Main Event Page Component
-const EventPage = () => {
+const EventPage = async () => {
+  const eventData: Event = await fetch(
+    `api/events/f3513c44-40cb-4924-bb1c-7f8590f9c53b`
+  ).then((res) => res.json());
+
   const event = {
     title: "Tech Conference 2025",
     banner: "https://picsum.photos/id/31/400/400",
@@ -123,7 +124,7 @@ const EventPage = () => {
         <h2 id="comments-heading" className="text-2xl font-semibold mb-4">
           Discussion
         </h2>
-        <Comments comments={event.comments} />
+        {/* <Comments comments={event.comments} /> */}
       </section>
 
       {/* Sticky Join Button */}
