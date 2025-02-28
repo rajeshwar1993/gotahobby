@@ -1,9 +1,14 @@
+import { Logger } from "@/utils/supabase/logger";
 import { MockDataHandler } from "./mockFetcher";
 import { SupabaseHandler } from "./supabase";
 import { DBHandlerType, Group } from "@/types";
 
 export abstract class DBHandler implements DBHandlerType {
-  constructor() {}
+  private logger;
+
+  constructor() {
+    this.logger = new Logger();
+  }
 
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
@@ -14,7 +19,7 @@ export abstract class DBHandler implements DBHandlerType {
 
   static async create(env: "supabase" | "local" = "local") {
     if (env === "supabase") {
-      return new SupabaseHandler();
+      return new SupabaseHandler(logger);
     }
     return new MockDataHandler();
   }

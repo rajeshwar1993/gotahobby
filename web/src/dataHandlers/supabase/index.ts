@@ -1,18 +1,19 @@
-import { Database as SupaDatabase } from "@/database.types";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 import { Group } from "@/types/group";
-import { SupabaseClient } from "@supabase/supabase-js";
 import axios from "axios";
 import { createClient } from "@/utils/supabase/server";
 import { DBHandler } from "..";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Logger } from "@/utils/supabase/logger";
 
 export class SupabaseHandler extends DBHandler {
-  private supabaseClient: any;
-  constructor() {
+  private supabaseClient: SupabaseClient<SupaDatabase> | null = null;
+  constructor(private logger: Logger) {
     super();
   }
 
   async connect() {
-    this.supabaseClient = createClient();
+    this.supabaseClient = await createClient<SupaDatabase>();
   }
 
   async disconnect() {
@@ -31,16 +32,22 @@ export class SupabaseHandler extends DBHandler {
     return response.data;
   }
 
-  async getEventById(eventId: string): Promise<Event> {
-    let { data: event, error } = await this.supabaseClient
-      .from("event")
-      .select("*")
-      .eq("id", eventId)
-      .single();
+  async getEventById(eventId: string): Promise<Event | null> {
+    try {
+      if (this.supabaseClient)
+        let { data: event, error } = await this.supabaseClient
+          .from("event")
+          .select("*")
+          .eq("id", eventId)
+          .single();
 
-    console.log(event, error);
+      this.logger.info("getEventById", { event, error });
 
-    return event;
+      return event;
+    } catch (error) {
+      this.logger.info("getEventById", error);
+      return null;
+    }
   }
 
   async getAllEventsOfGroup(groupId: string): Promise<Event[]> {
