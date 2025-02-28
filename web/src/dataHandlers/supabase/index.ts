@@ -1,13 +1,22 @@
 import { Database as SupaDatabase } from "@/database.types";
-import { DBHandlerType } from "@/types/dbHandler";
 import { Group } from "@/types/group";
 import { SupabaseClient } from "@supabase/supabase-js";
 import axios from "axios";
+import { createClient } from "@/utils/supabase/server";
+import { DBHandler } from "..";
 
-export class SupabaseHandler implements DBHandlerType {
-  supabaseClient;
-  constructor(client: SupabaseClient<SupaDatabase>) {
-    this.supabaseClient = client;
+export class SupabaseHandler extends DBHandler {
+  private supabaseClient: any;
+  constructor() {
+    super();
+  }
+
+  async connect() {
+    this.supabaseClient = createClient();
+  }
+
+  async disconnect() {
+    this.supabaseClient = null;
   }
 
   async getAllGroups(): Promise<Group[]> {
@@ -16,21 +25,32 @@ export class SupabaseHandler implements DBHandlerType {
     return response.data;
   }
 
-  async getGroup(): Promise<Group> {
+  async getGroupById(groupId: string): Promise<Group> {
     const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
   }
 
-  async getEvent(id: string): Promise<Event> {
+  async getEventById(eventId: string): Promise<Event> {
     let { data: event, error } = await this.supabaseClient
       .from("event")
       .select("*")
-      .eq("id", id)
+      .eq("id", eventId)
       .single();
 
     console.log(event, error);
 
     return event;
+  }
+
+  async getAllEventsOfGroup(groupId: string): Promise<Event[]> {
+    let { data: events, error } = await this.supabaseClient
+      .from("event")
+      .select("*")
+      .eq("group_id", groupId);
+
+    console.log(events, error);
+
+    return events;
   }
 }

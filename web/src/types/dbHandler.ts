@@ -4,6 +4,7 @@ export interface DBHandlerType {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   getAllGroups: () => Promise<Array<Group>>;
-  getGroup: (id: string) => Promise<Group>;
-  getEvent: (id: string) => Promise<Event>;
+  getGroupById: (groupId: string) => Promise<Group>;
+  getEventById: (eventId: string) => Promise<Event>;
+  getAllEventsOfGroup: (groupId: string) => Promise<Array<Event>>;
 }
