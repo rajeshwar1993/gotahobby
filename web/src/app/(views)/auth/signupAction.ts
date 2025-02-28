@@ -55,7 +55,7 @@ export async function signupAction(
 
   try {
     supabase = await createClient();
-  } catch (error) {
+  } catch (_) {
     return {
       success: false,
       errors: {

@@ -40,7 +40,7 @@ export class SupabaseHandler extends DBHandler {
         throw new Error("Supabase client not initialized");
       }
 
-      let { data: event, error } = await this.supabaseClient
+      const { data: event, error } = await this.supabaseClient
         .from("event")
         .select("*")
         .eq("id", eventId)
@@ -61,7 +61,7 @@ export class SupabaseHandler extends DBHandler {
         throw new Error("Supabase client not initialized");
       }
 
-      let { data: events, error } = await this.supabaseClient
+      const { data: events, error } = await this.supabaseClient
         .from("event")
         .select("*")
         .eq("group_id", groupId);

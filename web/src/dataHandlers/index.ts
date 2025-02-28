@@ -1,4 +1,3 @@
-import { Logger } from "@/utils/supabase/logger";
 import { MockDataHandler } from "./mockFetcher";
 import { SupabaseHandler } from "./supabase";
 import { DBHandlerType, Group } from "@/types";

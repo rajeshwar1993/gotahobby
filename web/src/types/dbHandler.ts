@@ -1,4 +1,3 @@
-import { Logger } from "@/utils/supabase/logger";
 import { Group } from "./group";
 
 export interface DBHandlerType {

@@ -1,8 +1,8 @@
-import { DBHandlerType } from "@/types/dbHandler";
 import { Group } from "@/types/group";
 import axios from "axios";
+import { DBHandler } from "..";
 
-export class MockDataHandler implements DBHandlerType {
+export class MockDataHandler extends DBHandler {
   constructor() {}
 
   async getAllGroups(): Promise<Group[]> {
@@ -11,13 +11,13 @@ export class MockDataHandler implements DBHandlerType {
     return response.data;
   }
 
-  async getGroup(groupId: String): Promise<Group> {
+  async getGroup(groupId: string): Promise<Group> {
     const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
   }
 
-  async getEvent(eventId: String): Promise<Event> {
+  async getEvent(eventId: string): Promise<Event> {
     const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
