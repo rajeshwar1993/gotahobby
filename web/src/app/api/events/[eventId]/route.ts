@@ -1,4 +1,4 @@
-import { DBHandler } from "@/dataHandlers";
+import { createDBHandler } from "@/dataHandlers";
 import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -16,7 +16,7 @@ export async function GET(
     params: Promise<{ eventId: string }>;
   }
 ): Promise<NextResponse<APIResponse<Event>>> {
-  const errorIdentifier = "GET gropup by ID";
+  const errorIdentifier = "GET event by ID";
   try {
     const eventId = (await params).eventId;
 
@@ -25,7 +25,8 @@ export async function GET(
     // TODO: validate input params
 
     // fetch data from DB
-    const dbHandler = await DBHandler.create("supabase");
+    const dbHandler = await createDBHandler("supabase");
+    await dbHandler.connect();
     const event = await dbHandler.getEventById(eventId);
 
     return createSuccessResponse(event);
@@ -50,13 +51,14 @@ export async function POST(
     // TODO: validate data
 
     // create Event in DB
-    const dbHandler = DBHandler.get();
+    const dbHandler = await createDBHandler("supabase");
     await dbHandler.createEvent(newEventUUID, eventName?.toString());
 
     return createSuccessResponse(
       {
         id: newEventUUID,
-        name: eventName?.toString() || "",
+        createdAtUTC: new Date().toISOString(),
+        title: eventName?.toString() || "",
       },
       {
         status: 201,
@@ -86,7 +88,7 @@ export async function PATCH(
     // TODO: validate authorization
 
     // create Event in DB
-    const dbHandler = DBHandler.get();
+    const dbHandler = await createDBHandler("supabase");
     const response = await dbHandler.updateEvent(
       eventId,
       eventName?.toString()
@@ -117,7 +119,7 @@ export async function DELETE({
     // TODO: validate authorization
 
     // create gropup in DB
-    const dbHandler = DBHandler.get();
+    const dbHandler = await createDBHandler("supabase");
     await dbHandler.deleteEvent(eventId);
 
     return createSuccessResponse({

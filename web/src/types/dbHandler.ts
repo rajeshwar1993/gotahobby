@@ -10,6 +10,11 @@ export interface DBHandlerType {
   ): Promise<Picture | Picture[]>;
   getAllGroups: () => Promise<Array<Group>>;
   getGroupById: (groupId: string) => Promise<Group>;
-  getEventById: (eventId: string) => Promise<Event | null>;
+  getEventById: (eventId: string) => Promise<Event>;
   getAllEventsOfGroup: (groupId: string) => Promise<Array<Event> | null>;
+
+  // These methods are used in the API routes but not implemented yet
+  createEvent?: (eventId: string, eventName?: string) => Promise<void>;
+  updateEvent?: (eventId: string, eventName?: string) => Promise<void>;
+  deleteEvent?: (eventId: string) => Promise<void>;
 }

@@ -2,7 +2,7 @@ import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types
 import { Group } from "@/types/group";
 import axios from "axios";
 import { createClient } from "@/utils/supabase/server";
-import { DBHandler } from "..";
+import { DBHandler } from "../dbHandler";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
 import { event_DBToObj, picture_DBToObj } from "./transformers";
@@ -168,12 +168,40 @@ export class SupabaseHandler extends DBHandler {
         throw new Error("Supabase client not initialized");
       }
 
-      const { data: events, error } = await this.supabaseClient
+      const { data: dbEvents, error } = await this.supabaseClient
         .from("event")
         .select("*")
-        .eq("group_id", groupId);
+        .eq("groupId", groupId);
 
-      console.log(events, error);
+      if (error) {
+        throw error;
+      }
+
+      if (!dbEvents || dbEvents.length === 0) {
+        return [];
+      }
+
+      // Transform each event
+      const events: Event[] = await Promise.all(
+        dbEvents.map(async (dbEvent) => {
+          const bannerImage = dbEvent.bannerImage
+            ? await this.getPictureById({
+                type: "single",
+                id: dbEvent.bannerImage,
+              })
+            : undefined;
+
+          const tags = await this.getTagsByIds(dbEvent.tags || []);
+          const hosts = await this.getGlanceUsersByIds(dbEvent.hosts || []);
+
+          return event_DBToObj({
+            dbEvent,
+            bannerImage: bannerImage as Picture,
+            tags,
+            hosts,
+          });
+        })
+      );
 
       return events;
     } catch (error) {
