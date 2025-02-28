@@ -4,22 +4,18 @@ import { SupabaseHandler } from "./supabase";
 import { DBHandlerType, Group } from "@/types";
 
 export abstract class DBHandler implements DBHandlerType {
-  private logger;
-
-  constructor() {
-    this.logger = new Logger();
-  }
+  constructor() {}
 
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
   abstract getAllGroups(): Promise<Group[]>;
   abstract getGroupById(groupId: string): Promise<Group>;
-  abstract getEventById(eventId: string): Promise<Event>;
-  abstract getAllEventsOfGroup(groupId: string): Promise<Event[]>;
+  abstract getEventById(eventId: string): Promise<Event | null>;
+  abstract getAllEventsOfGroup(groupId: string): Promise<Event[] | null>;
 
   static async create(env: "supabase" | "local" = "local") {
     if (env === "supabase") {
-      return new SupabaseHandler(logger);
+      return new SupabaseHandler();
     }
     return new MockDataHandler();
   }

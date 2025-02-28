@@ -7,9 +7,11 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
 
 export class SupabaseHandler extends DBHandler {
+  private logger;
   private supabaseClient: SupabaseClient<SupaDatabase> | null = null;
-  constructor(private logger: Logger) {
+  constructor() {
     super();
+    this.logger = new Logger();
   }
 
   async connect() {
@@ -34,12 +36,15 @@ export class SupabaseHandler extends DBHandler {
 
   async getEventById(eventId: string): Promise<Event | null> {
     try {
-      if (this.supabaseClient)
-        let { data: event, error } = await this.supabaseClient
-          .from("event")
-          .select("*")
-          .eq("id", eventId)
-          .single();
+      if (!this.supabaseClient) {
+        throw new Error("Supabase client not initialized");
+      }
+
+      let { data: event, error } = await this.supabaseClient
+        .from("event")
+        .select("*")
+        .eq("id", eventId)
+        .single();
 
       this.logger.info("getEventById", { event, error });
 
@@ -50,14 +55,23 @@ export class SupabaseHandler extends DBHandler {
     }
   }
 
-  async getAllEventsOfGroup(groupId: string): Promise<Event[]> {
-    let { data: events, error } = await this.supabaseClient
-      .from("event")
-      .select("*")
-      .eq("group_id", groupId);
+  async getAllEventsOfGroup(groupId: string): Promise<Event[] | null> {
+    try {
+      if (!this.supabaseClient) {
+        throw new Error("Supabase client not initialized");
+      }
 
-    console.log(events, error);
+      let { data: events, error } = await this.supabaseClient
+        .from("event")
+        .select("*")
+        .eq("group_id", groupId);
 
-    return events;
+      console.log(events, error);
+
+      return events;
+    } catch (error) {
+      this.logger.info("getAllEventsOfGroup", error);
+      return null;
+    }
   }
 }
