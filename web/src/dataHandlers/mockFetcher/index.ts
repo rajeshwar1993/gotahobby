@@ -3,7 +3,23 @@ import axios from "axios";
 import { DBHandler } from "..";
 
 export class MockDataHandler extends DBHandler {
-  constructor() {}
+  constructor() {
+    super();
+  }
+
+  async connect(): Promise<void> {
+    return;
+  }
+
+  async disconnect(): Promise<void> {
+    return;
+  }
+
+  async getPictureById(
+    query: { type: "single"; id: string } | { type: "multiple"; ids: string[] }
+  ) {
+    return;
+  }
 
   async getAllGroups(): Promise<Group[]> {
     const response = await axios.get("http://localhost:3090/api/groups/all");
@@ -11,15 +27,19 @@ export class MockDataHandler extends DBHandler {
     return response.data;
   }
 
-  async getGroup(groupId: string): Promise<Group> {
+  async getGroupById(groupId: string): Promise<Group> {
     const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
   }
 
-  async getEvent(eventId: string): Promise<Event> {
+  async getEventById(eventId: string): Promise<Event> {
     const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
+  }
+
+  async getAllEventsOfGroup(groupId: string): Promise<Event[] | null> {
+    return;
   }
 }

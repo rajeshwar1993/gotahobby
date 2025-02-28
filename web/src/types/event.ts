@@ -1,17 +1,17 @@
 import {
   Bio,
   Entity,
-  GlanceUser,
   Picture,
   CurrencyAmount,
   Tag,
   TimeStats,
-} from "./generics";
+  GlanceUser,
+} from ".";
 
 export type EventBasic = Entity &
   TimeStats & {
     title: string;
-    coverPicture: Picture;
+    bannerImage?: Picture;
   };
 
 export type NewEventResponse = Entity &
@@ -82,7 +82,7 @@ enum AttendeeStatus {
 }
 
 type EventAttendee = {
-  uuid: string;
+  id: string;
   name: string;
   picture: string;
   registrationDate: string;
@@ -98,7 +98,6 @@ enum EventStatus {
 
 export type Event = EventBasic & {
   bio: Bio;
-  bannerImage: Picture;
   tags: Array<Tag>;
   timing: EventTiming;
   location: EventLocation;

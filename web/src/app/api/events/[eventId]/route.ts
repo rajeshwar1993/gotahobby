@@ -25,10 +25,8 @@ export async function GET(
     // TODO: validate input params
 
     // fetch data from DB
-    const dbHandler = await DBHandler.get("supabase");
-    const event = await dbHandler.getEvent(eventId);
-
-    // TODO: validate response
+    const dbHandler = await DBHandler.create("supabase");
+    const event = await dbHandler.getEventById(eventId);
 
     return createSuccessResponse(event);
   } catch (error: unknown) {
@@ -57,7 +55,7 @@ export async function POST(
 
     return createSuccessResponse(
       {
-        uuid: newEventUUID,
+        id: newEventUUID,
         name: eventName?.toString() || "",
       },
       {
@@ -80,7 +78,7 @@ export async function PATCH(
   try {
     const eventId = (await params).eventId;
     const formData = await request.formData();
-    const uuid = formData.get("uuid");
+    const id = formData.get("id");
     const eventName = formData.get("name");
 
     // TODO: validate data

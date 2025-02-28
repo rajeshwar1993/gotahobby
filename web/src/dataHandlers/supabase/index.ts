@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import { DBHandler } from "..";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
+import { event_DBToObj, picture_DBToObj } from "./transformers";
+import { Event } from "@/types/event";
+import { GlanceUser, Picture, Tag } from "@/types";
 
 export class SupabaseHandler extends DBHandler {
   private logger;
@@ -22,6 +25,96 @@ export class SupabaseHandler extends DBHandler {
     this.supabaseClient = null;
   }
 
+  async getPictureById(
+    query: { type: "single"; id: string } | { type: "multiple"; ids: string[] }
+  ): Promise<Picture | Picture[]> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    if (query.type === "single") {
+      const { data: dbPicture, error } = await this.supabaseClient
+        .from("picture")
+        .select("*")
+        .eq("id", query.id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      const picture: Picture = picture_DBToObj(dbPicture);
+
+      return picture;
+    } else {
+      const { data: dbPictures, error } = await this.supabaseClient
+        .from("picture")
+        .select("*")
+        .in("id", query.ids);
+
+      if (error) {
+        throw error;
+      }
+
+      const pictures: Picture[] = dbPictures.map((dbPicture) =>
+        picture_DBToObj(dbPicture)
+      );
+
+      return pictures;
+    }
+  }
+
+  async getTagsByIds(tagIds: string[]): Promise<Tag[]> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: dbTags, error } = await this.supabaseClient
+      .from("tags")
+      .select("*")
+      .in("id", tagIds);
+
+    if (error) {
+      throw error;
+    }
+
+    const tags: Tag[] = dbTags.map((dbTag) => ({
+      id: dbTag.id,
+      value: dbTag.value,
+    }));
+
+    return tags;
+  }
+
+  async getGlanceUsersByIds(userIds: string[]): Promise<GlanceUser[]> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: dbUsers, error } = await this.supabaseClient
+      .from("users")
+      .select(
+        `id,
+        displayName,
+        picture:displayPicture(*)`
+      )
+      .in("id", userIds);
+
+    if (error) {
+      throw error;
+    }
+
+    const glanceUsers: GlanceUser[] = dbUsers.map((dbUser) => ({
+      id: dbUser.id,
+      displayName: dbUser.displayName,
+      displayPicture: dbUser.picture
+        ? picture_DBToObj(dbUser.picture)
+        : undefined,
+    }));
+
+    return glanceUsers;
+  }
+
   async getAllGroups(): Promise<Group[]> {
     const response = await axios.get("http://localhost:3090/api/groups/all");
 
@@ -34,29 +127,39 @@ export class SupabaseHandler extends DBHandler {
     return response.data;
   }
 
-  async getEventById(eventId: string): Promise<Event | null> {
-    try {
-      if (!this.supabaseClient) {
-        throw new Error("Supabase client not initialized");
-      }
-
-      const { data: event, error } = await this.supabaseClient
-        .from("event")
-        .select("*")
-        .eq("id", eventId)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      const evebtData: Event = transformDBEventToEvent(event);
-
-      return evebtData;
-    } catch (error) {
-      this.logger.info("getEventById", error);
-      return null;
+  async getEventById(eventId: string): Promise<Event> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
     }
+
+    const { data: dbEvent, error } = await this.supabaseClient
+      .from("event")
+      .select("*")
+      .eq("id", eventId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    const bannerImage = (
+      dbEvent.bannerImage
+        ? await this.getPictureById({ type: "single", id: dbEvent.bannerImage })
+        : undefined
+    ) as Picture | undefined;
+
+    const tags = await this.getTagsByIds(dbEvent.tags);
+
+    const hosts = await this.getGlanceUsersByIds(dbEvent.hosts);
+
+    const event: Event = event_DBToObj({
+      dbEvent,
+      bannerImage,
+      tags,
+      hosts,
+    });
+
+    return event;
   }
 
   async getAllEventsOfGroup(groupId: string): Promise<Event[] | null> {

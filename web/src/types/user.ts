@@ -1,4 +1,10 @@
 import { Entity, TimeStats } from "./generics";
+import { Picture } from "./picture";
+
+export type GlanceUser = Entity & {
+  displayName: string;
+  displayPicture?: Picture;
+};
 
 export type User = Entity &
   TimeStats & {

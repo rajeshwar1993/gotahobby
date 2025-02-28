@@ -61,7 +61,7 @@ export async function POST(
 
     return createSuccessResponse(
       {
-        uuid: newGroupUUID,
+        id: newGroupUUID,
         name: groupName?.toString() || "",
       },
       {
@@ -84,7 +84,7 @@ export async function PATCH(
   try {
     const groupId = (await params).groupId;
     const formData = await request.formData();
-    const uuid = formData.get("uuid");
+    const id = formData.get("id");
     const groupName = formData.get("name");
 
     // TODO: validate data
@@ -93,7 +93,7 @@ export async function PATCH(
 
     // create group in DB
     const dbHandler = DBHandler.get();
-    const response = await dbHandler.updateGroup(uuid, groupName?.toString());
+    const response = await dbHandler.updateGroup(id, groupName?.toString());
 
     return createSuccessResponse({
       operation: "OK",
