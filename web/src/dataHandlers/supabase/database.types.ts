@@ -6,6 +6,24 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+export type EventRow = {
+  bannerImage: string | null;
+  bio: string | null;
+  capacity: number | null;
+  created_at: string;
+  createdBy: string;
+  fee: Json | null;
+  groupId: string | null;
+  hosts: string[];
+  id: string;
+  isPublic: boolean | null;
+  location: Json | null;
+  status: Database["public"]["Enums"]["EventStatus"] | null;
+  tags: string[] | null;
+  timings: Json | null;
+  title: string;
+};
+
 export type Database = {
   graphql_public: {
     Tables: {
@@ -35,22 +53,7 @@ export type Database = {
   public: {
     Tables: {
       event: {
-        Row: {
-          bannerImage: string | null;
-          capacity: number | null;
-          created_at: string;
-          createdBy: string;
-          fee: Json | null;
-          groupId: string | null;
-          hosts: string[];
-          id: string;
-          isPublic: boolean | null;
-          location: Json | null;
-          status: Database["public"]["Enums"]["EventStatus"] | null;
-          tags: string[] | null;
-          timings: Json | null;
-          title: string | null;
-        };
+        Row: EventRow;
         Insert: {
           bannerImage?: string | null;
           capacity?: number | null;

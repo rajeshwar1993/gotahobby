@@ -46,9 +46,13 @@ export class SupabaseHandler extends DBHandler {
         .eq("id", eventId)
         .single();
 
-      this.logger.info("getEventById", { event, error });
+      if (error) {
+        throw error;
+      }
 
-      return event;
+      const evebtData: Event = transformDBEventToEvent(event);
+
+      return evebtData;
     } catch (error) {
       this.logger.info("getEventById", error);
       return null;

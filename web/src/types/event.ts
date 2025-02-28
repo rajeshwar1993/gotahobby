@@ -16,7 +16,7 @@ export type EventBasic = Entity &
 
 export type NewEventResponse = Entity &
   TimeStats & {
-    name: string;
+    title: string;
   };
 
 enum EventLocationType {
