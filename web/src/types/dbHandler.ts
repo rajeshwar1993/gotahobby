@@ -2,7 +2,6 @@ import { Logger } from "@/utils/supabase/logger";
 import { Group } from "./group";
 
 export interface DBHandlerType {
-  logger: Logger;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   getAllGroups: () => Promise<Array<Group>>;
