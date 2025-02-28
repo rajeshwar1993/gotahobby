@@ -1,24 +1,24 @@
 import { DBHandlerType } from "@/types/dbHandler";
-import { Hobby } from "@/types/hobby";
+import { Group } from "@/types/group";
 import axios from "axios";
 
 export class MockDataHandler implements DBHandlerType {
   constructor() {}
 
-  async getAllHobbies(): Promise<Hobby[]> {
-    const response = await axios.get("http://localhost:3090/api/hobbies/all");
+  async getAllGroups(): Promise<Group[]> {
+    const response = await axios.get("http://localhost:3090/api/groups/all");
 
     return response.data;
   }
 
-  async getHobby(hobbyId: String): Promise<Hobby> {
-    const response = await axios.get("http://localhost:3090/api/hobby");
+  async getGroup(groupId: String): Promise<Group> {
+    const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
   }
 
   async getEvent(eventId: String): Promise<Event> {
-    const response = await axios.get("http://localhost:3090/api/hobby");
+    const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
   }

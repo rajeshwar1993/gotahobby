@@ -16,7 +16,7 @@ export async function GET(
     params: Promise<{ eventId: string }>;
   }
 ): Promise<NextResponse<APIResponse<Event>>> {
-  const errorIdentifier = "GET hobby by ID";
+  const errorIdentifier = "GET gropup by ID";
   try {
     const eventId = (await params).eventId;
 
@@ -43,7 +43,7 @@ export async function GET(
 export async function POST(
   request: NextRequest
 ): Promise<NextResponse<APIResponse<NewEventResponse>>> {
-  const errorIdentifier = "Create new Hobby";
+  const errorIdentifier = "Create new gropup";
   try {
     const formData = await request.formData();
     const eventName = formData.get("name");
@@ -110,7 +110,7 @@ export async function DELETE({
 }: {
   params: Promise<{ eventId: string }>;
 }): Promise<NextResponse<OKResponse>> {
-  const errorIdentifier = "Update Hobby";
+  const errorIdentifier = "Update gropup";
   try {
     const eventId = (await params).eventId;
 
@@ -118,7 +118,7 @@ export async function DELETE({
 
     // TODO: validate authorization
 
-    // create Hobby in DB
+    // create gropup in DB
     const dbHandler = DBHandler.get();
     await dbHandler.deleteEvent(eventId);
 

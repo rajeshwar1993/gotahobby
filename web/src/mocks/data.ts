@@ -1,5 +1,5 @@
-export const mockHobbies = [
-  { id: 1, title: "First hobby" },
-  { id: 2, title: "Second hobby" },
-  { id: 3, title: "Third hobby" },
+export const mockGroups = [
+  { id: 1, title: "First group" },
+  { id: 2, title: "Second group" },
+  { id: 3, title: "Third group" },
 ];

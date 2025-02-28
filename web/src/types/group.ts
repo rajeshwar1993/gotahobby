@@ -1,16 +1,16 @@
 import { Bio, Entity, GlanceUser, Picture, Tag, TimeStats } from "@/types";
 
-export type HobbyBasic = Entity &
+export type GroupBasic = Entity &
   TimeStats & {
     name: string;
     coverPicture: Picture;
   };
 
-export type NewHobbyResponse = Entity & {
+export type NewGroupResponse = Entity & {
   name: string;
 };
 
-export type Hobby = HobbyBasic & {
+export type Group = GroupBasic & {
   bio: Bio;
   tags: Array<Tag>;
   members: Array<GlanceUser>;

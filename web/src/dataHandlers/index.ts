@@ -3,13 +3,13 @@ import { MockDataHandler } from "./mockFetcher";
 import { FirebaseHandler } from "./firebase";
 import { SupabaseHandler } from "./supabase";
 import { createClient } from "@/utils/supabase/server";
-import { DBHandlerType } from "@/types";
+import { DBHandlerType, Group } from "@/types";
 
 export abstract class DBHandler implements DBHandlerType {
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
-  abstract getAllHobbies(): Promise<Hobby[]>;
-  abstract getHobby(id: string): Promise<Hobby>;
+  abstract getAllGroups(): Promise<Group[]>;
+  abstract getGroup(id: string): Promise<Group>;
   abstract getEvent(id: string): Promise<Event>;
 
   static async create(env: "firebase" | "supabase" | "local" = "local") {

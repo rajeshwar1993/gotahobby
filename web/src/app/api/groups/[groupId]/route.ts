@@ -6,20 +6,20 @@ import {
   createSuccessResponse,
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
-import { Hobby, NewHobbyResponse } from "@/types/hobby";
+import { Group, NewGroupResponse } from "@/types/group";
 
 export async function GET(
   request: Request,
   {
     params,
   }: {
-    params: Promise<{ hobbyId: string }>;
+    params: Promise<{ groupId: string }>;
   }
-): Promise<NextResponse<APIResponse<Hobby>>> {
-  const errorIdentifier = "GET hobby by ID";
+): Promise<NextResponse<APIResponse<Group>>> {
+  const errorIdentifier = "GET group by ID";
   try {
-    const hobbyId = (await params).hobbyId;
-    console.log(hobbyId);
+    const groupId = (await params).groupId;
+    console.log(groupId);
 
     // TODO: authenticate request
 
@@ -27,11 +27,11 @@ export async function GET(
 
     // fetch data from DB
     const dbHandler = DBHandler.get();
-    const hobby = await dbHandler.getHobby(hobbyId);
+    const group = await dbHandler.getGroup(groupId);
 
     // TODO: validate response
 
-    return createSuccessResponse(hobby);
+    return createSuccessResponse(group);
   } catch (error: unknown) {
     console.log(error);
     if (isAxiosError(error)) {
@@ -43,26 +43,26 @@ export async function GET(
 
 export async function POST(
   request: NextRequest
-): Promise<NextResponse<APIResponse<NewHobbyResponse>>> {
-  const errorIdentifier = "Create new Hobby";
+): Promise<NextResponse<APIResponse<NewGroupResponse>>> {
+  const errorIdentifier = "Create new group";
   try {
     const formData = await request.formData();
-    const hobbyName = formData.get("name");
-    const newHobbyUUID = "1111-1111"; // TODO: create new hobby id
+    const groupName = formData.get("name");
+    const newGroupUUID = "1111-1111"; // TODO: create new group id
 
     // TODO: validate data
 
-    // create Hobby in DB
+    // create group in DB
     const dbHandler = DBHandler.get();
-    const response = await dbHandler.createHobby(
-      newHobbyUUID,
-      hobbyName?.toString()
+    const response = await dbHandler.createGroup(
+      newGroupUUID,
+      groupName?.toString()
     );
 
     return createSuccessResponse(
       {
-        uuid: newHobbyUUID,
-        name: hobbyName?.toString() || "",
+        uuid: newGroupUUID,
+        name: groupName?.toString() || "",
       },
       {
         status: 201,
@@ -78,22 +78,22 @@ export async function POST(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ hobbyId: string }> }
+  { params }: { params: Promise<{ groupId: string }> }
 ): Promise<NextResponse<OKResponse>> {
-  const errorIdentifier = "Update Hobby";
+  const errorIdentifier = "Update group";
   try {
-    const hobbyId = (await params).hobbyId;
+    const groupId = (await params).groupId;
     const formData = await request.formData();
     const uuid = formData.get("uuid");
-    const hobbyName = formData.get("name");
+    const groupName = formData.get("name");
 
     // TODO: validate data
 
     // TODO: validate authorization
 
-    // create Hobby in DB
+    // create group in DB
     const dbHandler = DBHandler.get();
-    const response = await dbHandler.updateHobby(uuid, hobbyName?.toString());
+    const response = await dbHandler.updateGroup(uuid, groupName?.toString());
 
     return createSuccessResponse({
       operation: "OK",
@@ -109,19 +109,19 @@ export async function PATCH(
 export async function DELETE({
   params,
 }: {
-  params: Promise<{ hobbyId: string }>;
+  params: Promise<{ groupId: string }>;
 }): Promise<NextResponse<OKResponse>> {
-  const errorIdentifier = "Update Hobby";
+  const errorIdentifier = "Update group";
   try {
-    const hobbyId = (await params).hobbyId;
+    const groupId = (await params).groupId;
 
     // TODO: validate data
 
     // TODO: validate authorization
 
-    // create Hobby in DB
+    // create group in DB
     const dbHandler = DBHandler.get();
-    await dbHandler.deleteHobby(hobbyId);
+    await dbHandler.deleteGroup(groupId);
 
     return createSuccessResponse({
       operation: "OK",

@@ -1,10 +1,9 @@
-import { Hobby } from "./hobby";
+import { Group } from "./group";
 
 export interface DBHandlerType {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  getAllHobbies: () => Promise<Array<Hobby>>;
-  getHobby: (id: string) => Promise<Hobby>;
-  getAllEvents;
+  getAllGroups: () => Promise<Array<Group>>;
+  getGroup: (id: string) => Promise<Group>;
   getEvent: (id: string) => Promise<Event>;
 }

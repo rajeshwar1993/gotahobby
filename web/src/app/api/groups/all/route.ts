@@ -1,6 +1,6 @@
 import { DBHandler } from "@/dataHandlers";
 import { APIResponse } from "@/types/apiTypes";
-import { Hobby } from "@/types/hobby";
+import { Group } from "@/types/group";
 import { NextResponse } from "next/server";
 import {
   createErrorResponse,
@@ -8,12 +8,12 @@ import {
 } from "../../utils/response";
 import { isAxiosError } from "axios";
 
-export async function GET(): Promise<NextResponse<APIResponse<Array<Hobby>>>> {
-  const errorIdentifier = "GET all hobbies";
+export async function GET(): Promise<NextResponse<APIResponse<Array<Group>>>> {
+  const errorIdentifier = "GET all groups";
   try {
     const dbHandler = DBHandler.get();
-    const hobby = await dbHandler.getAllHobbies();
-    return createSuccessResponse(hobby);
+    const group = await dbHandler.getAllGroups();
+    return createSuccessResponse(group);
   } catch (error: unknown) {
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);

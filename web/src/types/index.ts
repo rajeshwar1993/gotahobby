@@ -1,5 +1,5 @@
 export * from "./generics";
 export * from "./apiTypes";
 export * from "./dbHandler";
-export * from "./hobby";
+export * from "./group";
 export * from "./event";

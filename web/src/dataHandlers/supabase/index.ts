@@ -1,6 +1,6 @@
 import { Database as SupaDatabase } from "@/database.types";
 import { DBHandlerType } from "@/types/dbHandler";
-import { Hobby } from "@/types/hobby";
+import { Group } from "@/types/group";
 import { SupabaseClient } from "@supabase/supabase-js";
 import axios from "axios";
 
@@ -10,14 +10,14 @@ export class SupabaseHandler implements DBHandlerType {
     this.supabaseClient = client;
   }
 
-  async getAllHobbies(): Promise<Hobby[]> {
-    const response = await axios.get("http://localhost:3090/api/hobbies/all");
+  async getAllGroups(): Promise<Group[]> {
+    const response = await axios.get("http://localhost:3090/api/groups/all");
 
     return response.data;
   }
 
-  async getHobby(): Promise<Hobby> {
-    const response = await axios.get("http://localhost:3090/api/hobby");
+  async getGroup(): Promise<Group> {
+    const response = await axios.get("http://localhost:3090/api/group");
 
     return response.data;
   }
