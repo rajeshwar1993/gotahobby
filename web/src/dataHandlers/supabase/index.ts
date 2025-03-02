@@ -27,7 +27,7 @@ export class SupabaseHandler extends DBHandler {
 
   async getPictureById(
     query: { type: "single"; id: string } | { type: "multiple"; ids: string[] }
-  ): Promise<Picture | Picture[]> {
+  ): Promise<Picture[]> {
     if (!this.supabaseClient) {
       throw new Error("Supabase client not initialized");
     }
@@ -45,7 +45,7 @@ export class SupabaseHandler extends DBHandler {
 
       const picture: Picture = picture_DBToObj(dbPicture);
 
-      return picture;
+      return [picture];
     } else {
       const { data: dbPictures, error } = await this.supabaseClient
         .from("picture")
@@ -142,21 +142,24 @@ export class SupabaseHandler extends DBHandler {
       throw error;
     }
 
-    const bannerImage = (
-      dbEvent.bannerImage
-        ? await this.getPictureById({ type: "single", id: dbEvent.bannerImage })
-        : undefined
-    ) as Picture | undefined;
+    const bannerImage = dbEvent.bannerImage
+      ? await this.getPictureById({ type: "single", id: dbEvent.bannerImage })
+      : undefined;
 
     const tags = await this.getTagsByIds(dbEvent.tags);
 
     const hosts = await this.getGlanceUsersByIds(dbEvent.hosts);
 
+    const photos = dbEvent.photos
+      ? await this.getPictureById({ type: "multiple", ids: dbEvent.photos })
+      : [];
+
     const event: Event = event_DBToObj({
       dbEvent,
-      bannerImage,
+      bannerImage: bannerImage ? bannerImage[0] : undefined,
       tags,
       hosts,
+      photos,
     });
 
     return event;

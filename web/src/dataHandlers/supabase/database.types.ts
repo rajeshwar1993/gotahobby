@@ -15,13 +15,13 @@ export type Database = {
           bio: string | null
           capacity: number | null
           created_at: string
-          createdBy: string
           fee: Json | null
           groupId: string | null
           hosts: string[]
           id: string
           isPublic: boolean | null
           location: Json | null
+          photos: string[] | null
           status: Database["public"]["Enums"]["EventStatus"] | null
           tags: string[]
           timings: Json | null
@@ -32,13 +32,13 @@ export type Database = {
           bio?: string | null
           capacity?: number | null
           created_at?: string
-          createdBy: string
           fee?: Json | null
           groupId?: string | null
           hosts: string[]
           id?: string
           isPublic?: boolean | null
           location?: Json | null
+          photos?: string[] | null
           status?: Database["public"]["Enums"]["EventStatus"] | null
           tags: string[]
           timings?: Json | null
@@ -49,13 +49,13 @@ export type Database = {
           bio?: string | null
           capacity?: number | null
           created_at?: string
-          createdBy?: string
           fee?: Json | null
           groupId?: string | null
           hosts?: string[]
           id?: string
           isPublic?: boolean | null
           location?: Json | null
+          photos?: string[] | null
           status?: Database["public"]["Enums"]["EventStatus"] | null
           tags?: string[]
           timings?: Json | null
@@ -67,13 +67,6 @@ export type Database = {
             columns: ["bannerImage"]
             isOneToOne: false
             referencedRelation: "picture"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_createdBy_fkey"
-            columns: ["createdBy"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {

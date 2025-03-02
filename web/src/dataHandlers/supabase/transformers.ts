@@ -33,11 +33,13 @@ export function event_DBToObj({
   bannerImage,
   tags,
   hosts,
+  photos,
 }: {
   dbEvent: dbEvent;
   bannerImage?: Picture;
   tags: Tag[];
   hosts: GlanceUser[];
+  photos: Picture[];
 }): Event {
   // 1. Basic entity and time stats transformation
   const basicInfo: Entity & TimeStats = {
@@ -83,7 +85,7 @@ export function event_DBToObj({
     groupID: dbEvent.groupId || "",
     attendies: [], // Would need to fetch from a separate table
     host: hosts,
-    photos: [], // Would need to fetch from picture table
+    photos,
     capacity: dbEvent.capacity || 0,
     status: dbEvent.status || ("draft" as any), // Using string as enum value
     fee,
