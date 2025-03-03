@@ -14,7 +14,10 @@ export interface DBHandlerType {
   getAllEventsOfGroup: (groupId: string) => Promise<Array<Event> | null>;
 
   // These methods are used in the API routes but not implemented yet
-  createEvent?: (eventId: string, eventName?: string) => Promise<void>;
-  updateEvent?: (eventId: string, eventName?: string) => Promise<void>;
+  createEvent?: (eventName: string, groupId: string) => Promise<{ id: string }>;
+  updateEvent?: (
+    eventId: string,
+    data: Partial<import("./event").Event>
+  ) => Promise<void>;
   deleteEvent?: (eventId: string) => Promise<void>;
 }

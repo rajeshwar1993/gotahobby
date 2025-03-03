@@ -14,10 +14,7 @@ export type EventBasic = Entity &
     bannerImage?: Picture;
   };
 
-export type NewEventResponse = Entity &
-  TimeStats & {
-    title: string;
-  };
+export type NewEventResponse = Entity;
 
 enum EventLocationType {
   OFFLINE = "OFFLINE",

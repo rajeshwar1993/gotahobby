@@ -1,18 +1,10 @@
 import Link from "next/link";
+import { CreateEventButton } from "@/components/create-event-button";
 
 type Group = {
   id: number;
   title: string;
 };
-
-export async function generateStaticParams() {
-  const groups: Group[] = await fetch(
-    "http://localhost:3000/api/groups/all"
-  ).then((res) => res.json());
-  return groups.map((group) => ({
-    id: String(group.id),
-  }));
-}
 
 export default async function GroupPage({
   params,
@@ -24,11 +16,30 @@ export default async function GroupPage({
   const json: Group = await response.json();
 
   return (
-    <div>
-      <h1>Group Page : {json.title}</h1>
-      <Link href={"/group/1"}>___1</Link>
-      <Link href={"/group/2"}>___2</Link>
-      <Link href={"/group/3"}>___3</Link>
+    <div className="container py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Group: {json.title}</h1>
+        <CreateEventButton groupId={"e9cbd152-ef0c-47c7-81e4-adb11168f856"} />
+      </div>
+
+      <div className="flex gap-4 mb-8">
+        <Link href={"/group/1"} className="underline">
+          Group 1
+        </Link>
+        <Link href={"/group/2"} className="underline">
+          Group 2
+        </Link>
+        <Link href={"/group/3"} className="underline">
+          Group 3
+        </Link>
+      </div>
+
+      <div className="bg-muted/40 p-8 rounded-lg text-center">
+        <p className="text-muted-foreground">No events in this group yet.</p>
+        <p className="text-muted-foreground">
+          Create a new event to get started!
+        </p>
+      </div>
     </div>
   );
 }
