@@ -15,9 +15,6 @@ export async function GET(): Promise<NextResponse<APIResponse<Array<Group>>>> {
     const group = await dbHandler.getAllGroups();
     return createSuccessResponse(group);
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }

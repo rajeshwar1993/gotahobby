@@ -9,7 +9,6 @@ export default async function EditEventPage({
   const eventId = (await params).eventId;
 
   const response = await fetch(createPath(`/api/events/${eventId}`));
-  console.log(response);
 
   if (!response.ok) {
     throw new Error("Failed to fetch event");
@@ -32,9 +31,7 @@ export default async function EditEventPage({
       <EventForm
         eventId={eventId}
         initialData={result.data || undefined}
-        onSuccess={(eventId) => {
-          console.log("Success");
-        }}
+        onSuccess={(eventId) => {}}
       />
     </div>
   );

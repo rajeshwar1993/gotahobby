@@ -32,10 +32,7 @@ export async function GET({
 
     return createSuccessResponse(comments);
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -62,10 +59,7 @@ export async function POST(
 
     return createSuccessResponse(newComment, { status: 201 });
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -95,10 +89,7 @@ export async function PATCH(
 
     return createSuccessResponse({ operation: "OK" });
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -120,9 +111,6 @@ export async function DELETE({
 
     return createSuccessResponse({ operation: "OK" });
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }

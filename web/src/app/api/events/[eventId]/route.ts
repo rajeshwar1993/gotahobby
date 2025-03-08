@@ -32,10 +32,7 @@ export async function GET(
 
     return createSuccessResponse(event);
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -64,12 +61,7 @@ export async function PATCH(
       operation: "OK",
     });
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    } else if (error instanceof Error) {
-      return createErrorResponse(errorIdentifier, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -94,10 +86,6 @@ export async function DELETE({
       operation: "OK",
     });
   } catch (error: unknown) {
-    console.log("error", error);
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }

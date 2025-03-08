@@ -19,7 +19,6 @@ export async function GET(
   const errorIdentifier = "GET group by ID";
   try {
     const groupId = (await params).groupId;
-    console.log(groupId);
 
     // TODO: authenticate request
 
@@ -33,11 +32,7 @@ export async function GET(
 
     return createSuccessResponse(group);
   } catch (error: unknown) {
-    console.log(error);
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -69,10 +64,7 @@ export async function POST(
       }
     );
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -99,10 +91,7 @@ export async function PATCH(
       operation: "OK",
     });
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }
 
@@ -127,9 +116,6 @@ export async function DELETE({
       operation: "OK",
     });
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-    return createErrorResponse(errorIdentifier);
+    return createErrorResponse(errorIdentifier, error);
   }
 }

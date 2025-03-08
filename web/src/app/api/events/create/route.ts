@@ -59,10 +59,6 @@ export async function POST(
       );
     }
 
-    if (isAxiosError(error)) {
-      return createErrorResponse(errorIdentifier, error.code, error.message);
-    }
-
     return createErrorResponse(
       errorIdentifier,
       "UNKNOWN_ERROR",

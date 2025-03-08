@@ -105,8 +105,5 @@ export function event_ObjToDB(event: Partial<Event>): UpdateEvent {
     fee: event.fee ? JSON.stringify(event.fee) : undefined,
     isPublic: event.isPublic,
   };
-
-  console.log("transfomed", dbData);
-
   return dbData;
 }

@@ -136,7 +136,6 @@ export async function signupAction(
     });
 
     if (dbError) {
-      console.log("dbError: ", dbError.message);
       // Attempt to clean up the auth user if db insertion fails
       await supabase.auth.admin.deleteUser(authData.user.id);
 
@@ -149,7 +148,6 @@ export async function signupAction(
     }
   } catch (error) {
     isLoginSuccess = false;
-    console.log("Error:", error);
     // Handle unexpected errors
     return {
       success: false,

@@ -8,7 +8,8 @@ export type Result = {
 
 export type CustomError = {
   message: string;
-  code: string;
+  code?: string;
+  name?: string;
 };
 
 export type APISuccessResponse<T> = {

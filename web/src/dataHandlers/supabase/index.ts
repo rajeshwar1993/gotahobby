@@ -266,8 +266,6 @@ export class SupabaseHandler extends DBHandler {
       .update(data)
       .eq("id", eventId);
 
-    console.log("error", error);
-
     if (error) {
       this.logger.error("updateEvent", error);
       throw error;
