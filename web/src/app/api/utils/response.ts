@@ -1,4 +1,5 @@
 import { APIResponse, CustomError } from "@/types/apiTypes";
+import { PostgrestError } from "@supabase/supabase-js";
 import { isAxiosError } from "axios";
 import { NextResponse } from "next/server";
 
@@ -24,11 +25,21 @@ export const createErrorResponse = <T>(
   errorIdentifier: string = "Unknown Error identifier",
   error: unknown
 ): NextResponse<APIResponse<T>> => {
-  let name: string | undefined = "Unexpected Error name";
-  let code: string | undefined = "Unexpected Error code";
-  let message: string | undefined = "Unexpected Error occured";
+  let origin: string = "Unknown";
+  let name: string | undefined = "Unknown Error name";
+  let code: string | undefined = "Unknown Error code";
+  let message: string | undefined = "Unknown Error occured";
+
+  console.error(`Error: [${errorIdentifier}]:`, error);
 
   if (isAxiosError(error)) {
+    origin = "Axios";
+    name = error.name;
+    code = error.code;
+    message = error.message;
+  } else if (error instanceof PostgrestError) {
+    // TODO : these errors are from supabase, we need to handle them properly
+    origin = "DB";
     name = error.name;
     code = error.code;
     message = error.message;
@@ -38,9 +49,11 @@ export const createErrorResponse = <T>(
   }
 
   const customError: CustomError = {
-    message: `Error: [${errorIdentifier}]: ${message}`,
+    errorIdentifier,
+    message,
     code,
     name,
+    origin,
   };
 
   return NextResponse.json({
