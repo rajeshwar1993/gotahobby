@@ -25,6 +25,7 @@ export const createErrorResponse = <T>(
   errorIdentifier: string = "Unknown Error identifier",
   error: unknown
 ): NextResponse<APIResponse<T>> => {
+  let status = 500;
   let origin: string = "Unknown";
   let name: string | undefined = "Unknown Error name";
   let code: string | undefined = "Unknown Error code";
@@ -40,6 +41,7 @@ export const createErrorResponse = <T>(
   } else if (error instanceof PostgrestError) {
     // TODO : these errors are from supabase, we need to handle them properly
     origin = "DB";
+    status = 400;
     name = error.name;
     code = error.code;
     message = error.message;
@@ -56,9 +58,12 @@ export const createErrorResponse = <T>(
     origin,
   };
 
-  return NextResponse.json({
-    isSuccess: false,
-    data: null,
-    error: customError,
-  });
+  return NextResponse.json(
+    {
+      isSuccess: false,
+      data: null,
+      error: customError,
+    },
+    { status }
+  );
 };
