@@ -17,7 +17,7 @@ export interface DBHandlerType {
   createEvent?: (eventName: string, groupId: string) => Promise<{ id: string }>;
   updateEvent?: (
     eventId: string,
-    data: Partial<import("./event").Event>
+    data: 
   ) => Promise<void>;
   deleteEvent?: (eventId: string) => Promise<void>;
 }

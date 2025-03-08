@@ -12,6 +12,7 @@ import {
 import { Database } from "./database.types";
 
 type dbEvent = Database["public"]["Tables"]["event"]["Row"];
+type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
 type DBPicture = Database["public"]["Tables"]["picture"]["Row"];
 
 export function picture_DBToObj(supaPicture: DBPicture): Picture {
@@ -91,4 +92,21 @@ export function event_DBToObj({
     fee,
     isPublic: dbEvent.isPublic || false,
   };
+}
+
+export function event_ObjToDB(event: Partial<Event>): UpdateEvent {
+  const dbData: UpdateEvent = {
+    title: event.title,
+    bio: event.bio,
+    timings: event.timing ? JSON.stringify(event.timing) : undefined,
+    location: event.location ? JSON.stringify(event.location) : undefined,
+    capacity: event.capacity,
+    status: event.status,
+    fee: event.fee ? JSON.stringify(event.fee) : undefined,
+    isPublic: event.isPublic,
+  };
+
+  console.log("transfomed", dbData);
+
+  return dbData;
 }

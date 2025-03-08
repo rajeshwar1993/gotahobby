@@ -2,8 +2,11 @@ import { Group } from "@/types/group";
 import { Event } from "@/types/event";
 import { Picture } from "@/types/picture";
 import { DBHandlerType } from "@/types/dbHandler";
+import { Database } from "./supabase/database.types";
 
-export abstract class DBHandler implements DBHandlerType {
+type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
+
+export abstract class DBHandler {
   constructor() {}
 
   abstract connect(): Promise<void>;
@@ -22,6 +25,6 @@ export abstract class DBHandler implements DBHandlerType {
     groupId: string
   ): Promise<{ id: string }>;
 
-  abstract updateEvent(eventId: string, data: Partial<Event>): Promise<void>;
+  abstract updateEvent(eventId: string, data: UpdateEvent): Promise<void>;
   abstract deleteEvent(eventId: string): Promise<void>;
 }

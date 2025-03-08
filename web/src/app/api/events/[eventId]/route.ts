@@ -7,6 +7,7 @@ import {
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
 import { Event, NewEventResponse } from "@/types";
+import { event_ObjToDB } from "@/dataHandlers/supabase/transformers";
 
 export async function GET(
   request: Request,
@@ -48,17 +49,16 @@ export async function PATCH(
 
     // TODO: authenticate request
 
-    // TODO: validate input params
+    // TODO: validate input params using zod
 
     const body = await request.json();
-
-    const { title, bio } = body.data;
 
     // create db handler
     const dbHandler = await createDBHandler("supabase");
     await dbHandler.connect();
+    const data = event_ObjToDB(body);
 
-    await dbHandler.updateEvent(eventId, { title, bio });
+    await dbHandler.updateEvent(eventId, data);
 
     return createSuccessResponse({
       operation: "OK",
@@ -66,6 +66,8 @@ export async function PATCH(
   } catch (error: unknown) {
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
+    } else if (error instanceof Error) {
+      return createErrorResponse(errorIdentifier, error.message);
     }
     return createErrorResponse(errorIdentifier);
   }

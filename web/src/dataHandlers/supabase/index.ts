@@ -1,4 +1,7 @@
-import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
+import {
+  Database,
+  Database as SupaDatabase,
+} from "@/dataHandlers/supabase/database.types";
 import { Group } from "@/types/group";
 import axios from "axios";
 import { createClient } from "@/utils/supabase/server";
@@ -8,6 +11,8 @@ import { Logger } from "@/utils/supabase/logger";
 import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
 import { GlanceUser, Picture, Tag } from "@/types";
+
+type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
 
 export class SupabaseHandler extends DBHandler {
   private logger;
@@ -251,30 +256,14 @@ export class SupabaseHandler extends DBHandler {
   }
 
   // Override the updateEvent method from DBHandler
-  async updateEvent(eventId: string, data: Partial<Event>): Promise<void> {
+  async updateEvent(eventId: string, data: UpdateEvent): Promise<void> {
     if (!this.supabaseClient) {
       throw new Error("Supabase client not initialized");
     }
 
-    // Transform data from application format to DB format
-    const dbData: any = {
-      title: data.title,
-      capacity: data.capacity,
-      isPublic: data.isPublic,
-    };
-
-    // Handle nested objects
-    if (data.bio) {
-      dbData.bio = data.bio.text;
-    }
-
-    if (data.fee) {
-      dbData.fee = data.fee;
-    }
-
     const { error } = await this.supabaseClient
       .from("event")
-      .update(dbData)
+      .update(data)
       .eq("id", eventId);
 
     console.log("error", error);
