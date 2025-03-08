@@ -17,69 +17,6 @@ export class SupabaseHandler extends DBHandler {
     this.logger = new Logger();
   }
 
-  // Override the createEvent method from DBHandler
-  async createEvent(
-    eventName: string,
-    groupId: string
-  ): Promise<{ id: string }> {
-    if (!this.supabaseClient) {
-      throw new Error("Supabase client not initialized");
-    }
-
-    const { data: event, error } = await this.supabaseClient
-      .from("event")
-      .insert({
-        title: eventName,
-        groupId: groupId,
-        hosts: [], // Default empty array
-        tags: [], // Default empty array
-        status: "draft",
-        created_at: new Date().toISOString(),
-      })
-      .select()
-      .single();
-
-    if (error) {
-      this.logger.error("createEvent", error);
-      throw error;
-    }
-
-    return { id: event.id };
-  }
-
-  // Override the updateEvent method from DBHandler
-  async updateEvent(eventId: string, data: Partial<Event>): Promise<void> {
-    if (!this.supabaseClient) {
-      throw new Error("Supabase client not initialized");
-    }
-
-    // Transform data from application format to DB format
-    const dbData: any = {
-      title: data.title,
-      capacity: data.capacity,
-      isPublic: data.isPublic,
-    };
-
-    // Handle nested objects
-    if (data.bio) {
-      dbData.bio = data.bio.text;
-    }
-
-    if (data.fee) {
-      dbData.fee = data.fee;
-    }
-
-    const { error } = await this.supabaseClient
-      .from("event")
-      .update(dbData)
-      .eq("id", eventId);
-
-    if (error) {
-      this.logger.error("updateEvent", error);
-      throw error;
-    }
-  }
-
   async connect() {
     this.supabaseClient = await createClient<SupaDatabase>();
   }
@@ -282,4 +219,71 @@ export class SupabaseHandler extends DBHandler {
       return null;
     }
   }
+
+  // Override the createEvent method from DBHandler
+  async createEvent(
+    eventName: string,
+    groupId: string
+  ): Promise<{ id: string }> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: event, error } = await this.supabaseClient
+      .from("event")
+      .insert({
+        title: eventName,
+        groupId: groupId,
+        hosts: [], // Default empty array
+        tags: [], // Default empty array
+        status: "draft",
+        created_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      this.logger.error("createEvent", error);
+      throw error;
+    }
+
+    return { id: event.id };
+  }
+
+  // Override the updateEvent method from DBHandler
+  async updateEvent(eventId: string, data: Partial<Event>): Promise<void> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    // Transform data from application format to DB format
+    const dbData: any = {
+      title: data.title,
+      capacity: data.capacity,
+      isPublic: data.isPublic,
+    };
+
+    // Handle nested objects
+    if (data.bio) {
+      dbData.bio = data.bio.text;
+    }
+
+    if (data.fee) {
+      dbData.fee = data.fee;
+    }
+
+    const { error } = await this.supabaseClient
+      .from("event")
+      .update(dbData)
+      .eq("id", eventId);
+
+    console.log("error", error);
+
+    if (error) {
+      this.logger.error("updateEvent", error);
+      throw error;
+    }
+  }
+
+  async deleteEvent(eventId: string): Promise<void> {}
 }

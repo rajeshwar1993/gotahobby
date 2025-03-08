@@ -17,18 +17,11 @@ export abstract class DBHandler implements DBHandlerType {
   abstract getAllEventsOfGroup(groupId: string): Promise<Event[] | null>;
 
   // Optional methods used in API routes
-  async createEvent(
+  abstract createEvent(
     eventName: string,
     groupId: string
-  ): Promise<{ id: string }> {
-    throw new Error("Method not implemented");
-  }
+  ): Promise<{ id: string }>;
 
-  async updateEvent(eventId: string, data: Partial<Event>): Promise<void> {
-    throw new Error("Method not implemented");
-  }
-
-  async deleteEvent(eventId: string): Promise<void> {
-    throw new Error("Method not implemented");
-  }
+  abstract updateEvent(eventId: string, data: Partial<Event>): Promise<void>;
+  abstract deleteEvent(eventId: string): Promise<void>;
 }

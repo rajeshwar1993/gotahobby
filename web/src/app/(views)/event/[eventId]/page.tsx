@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Gallery } from "@/components/image-gallery";
+import { createPath } from "@/utils/url";
 
 // Event Details Component
 const EventDetails = ({ event }) => (
@@ -39,7 +40,7 @@ const StickyJoinButton = ({ price }: { price: number }) => (
 // Main Event Page Component
 const EventPage = async () => {
   const eventData: Event = await fetch(
-    `api/events/f3513c44-40cb-4924-bb1c-7f8590f9c53b`
+    createPath(`/api/events/0d55a6dc-4b44-4a18-9d6b-2f8acad01687`)
   ).then((res) => res.json());
 
   const event = {

@@ -31,7 +31,6 @@ export async function GET(
 
     return createSuccessResponse(event);
   } catch (error: unknown) {
-    console.log(error);
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
     }
@@ -44,6 +43,32 @@ export async function PATCH(
   { params }: { params: Promise<{ eventId: string }> }
 ): Promise<NextResponse<OKResponse>> {
   const errorIdentifier = "Update event";
+  try {
+    const eventId = (await params).eventId;
+
+    // TODO: authenticate request
+
+    // TODO: validate input params
+
+    const body = await request.json();
+
+    const { title, bio } = body.data;
+
+    // create db handler
+    const dbHandler = await createDBHandler("supabase");
+    await dbHandler.connect();
+
+    await dbHandler.updateEvent(eventId, { title, bio });
+
+    return createSuccessResponse({
+      operation: "OK",
+    });
+  } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      return createErrorResponse(errorIdentifier, error.code, error.message);
+    }
+    return createErrorResponse(errorIdentifier);
+  }
 }
 
 export async function DELETE({
@@ -67,6 +92,7 @@ export async function DELETE({
       operation: "OK",
     });
   } catch (error: unknown) {
+    console.log("error", error);
     if (isAxiosError(error)) {
       return createErrorResponse(errorIdentifier, error.code, error.message);
     }
