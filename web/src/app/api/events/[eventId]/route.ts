@@ -8,11 +8,10 @@ import { APIResponse, OKResponse } from "@/types/apiTypes";
 import { Event, NewEventResponse } from "@/types";
 import { event_ObjToDB } from "@/dataHandlers/supabase/transformers";
 import { z } from "zod";
-
-const CREATE_PARAM = "create";
+import { CREATE_PARAM } from "@/app/constants";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   {
     params,
   }: {
@@ -65,7 +64,7 @@ export async function POST(
     const validatedData = eventCreateSchema.parse(body);
 
     // Generate a new UUID for the event
-    const eventId = crypto.randomUUID();
+    const eventId = (await params).eventId;
     if (eventId !== CREATE_PARAM) {
       throw new Error("Invalid event ID");
     }

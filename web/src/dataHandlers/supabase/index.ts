@@ -273,4 +273,48 @@ export class SupabaseHandler extends DBHandler {
   }
 
   async deleteEvent(eventId: string): Promise<void> {}
+
+  async getTagById(tagId: string): Promise<Tag> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: dbTag, error } = await this.supabaseClient
+      .from("tags")
+      .select("*")
+      .eq("id", tagId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    const tag: Tag = {
+      id: dbTag.id,
+      value: dbTag.value,
+    };
+
+    return tag;
+  }
+
+  async createTag(value: string): Promise<Tag> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: tag, error } = await this.supabaseClient
+      .from("tags")
+      .insert({ value })
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      id: tag.id,
+      value: tag.value,
+    };
+  }
 }
