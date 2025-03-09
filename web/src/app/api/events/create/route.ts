@@ -49,20 +49,6 @@ export async function POST(
       }
     );
   } catch (error: unknown) {
-    console.error("Error creating event:", error);
-
-    if (error instanceof z.ZodError) {
-      return createErrorResponse(
-        errorIdentifier,
-        "VALIDATION_ERROR",
-        error.errors.map((e) => `${e.path}: ${e.message}`).join(", ")
-      );
-    }
-
-    return createErrorResponse(
-      errorIdentifier,
-      "UNKNOWN_ERROR",
-      error instanceof Error ? error.message : "An unknown error occurred"
-    );
+    return createErrorResponse(errorIdentifier, error);
   }
 }

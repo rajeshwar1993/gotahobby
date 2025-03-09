@@ -2,6 +2,7 @@ import { APIResponse, CustomError } from "@/types/apiTypes";
 import { PostgrestError } from "@supabase/supabase-js";
 import { isAxiosError } from "axios";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 export const createSuccessResponse = <T>(
   data: T,
@@ -38,6 +39,10 @@ export const createErrorResponse = <T>(
     name = error.name;
     code = error.code;
     message = error.message;
+  } else if (error instanceof z.ZodError) {
+    origin = "Zod";
+    name = error.name;
+    message = error.errors.map((e) => `${e.path}: ${e.message}`).join(", ");
   } else if (error instanceof PostgrestError) {
     // TODO : these errors are from supabase, we need to handle them properly
     origin = "DB";
