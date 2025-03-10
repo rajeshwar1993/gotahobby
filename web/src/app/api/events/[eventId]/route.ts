@@ -33,7 +33,7 @@ export async function GET(
     const dbHandler = await createDBHandler("supabase");
     await dbHandler.connect();
     const event = await dbHandler.getEventById(eventId);
-
+    await dbHandler.disconnect();
     return createSuccessResponse(event);
   } catch (error: unknown) {
     return createErrorResponse(errorIdentifier, error);
@@ -78,7 +78,7 @@ export async function POST(
       validatedData.title,
       validatedData.groupId
     );
-
+    await dbHandler.disconnect();
     // Return the newly created event ID and basic info
     return createSuccessResponse(
       {
@@ -114,9 +114,8 @@ export async function PATCH(
     const dbHandler = await createDBHandler("supabase");
     await dbHandler.connect();
     const data = event_ObjToDB(body);
-
     await dbHandler.updateEvent(eventId, data);
-
+    await dbHandler.disconnect();
     return createSuccessResponse({
       operation: "OK",
     });

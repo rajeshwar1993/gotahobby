@@ -1,7 +1,6 @@
 import { Group } from "@/types/group";
 import { Event } from "@/types/event";
 import { Picture } from "@/types/picture";
-import { DBHandlerType } from "@/types/dbHandler";
 import { Database } from "./supabase/database.types";
 import { Tag } from "@/types";
 

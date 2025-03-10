@@ -32,7 +32,7 @@ export async function GET(
     const dbHandler = await createDBHandler("supabase");
     await dbHandler.connect();
     const event = await dbHandler.getTagById(tagId);
-
+    await dbHandler.disconnect();
     return createSuccessResponse(event);
   } catch (error: unknown) {
     return createErrorResponse(errorIdentifier, error);
@@ -69,7 +69,7 @@ export async function POST(
     // Initialize the database handler
     const dbHandler = await createDBHandler("supabase");
     await dbHandler.connect();
-
+    await dbHandler.disconnect();
     // Create the event in the database
     const response = await dbHandler.createTag(validatedData.value);
 
