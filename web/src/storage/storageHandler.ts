@@ -14,7 +14,7 @@ export abstract class StorageHandler {
 
   abstract uploadImage({
     file,
-    type,
+    pictureType,
     entityId,
   }: ImageStorageInput): Promise<UploadResponse>;
 }
