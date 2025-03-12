@@ -5,6 +5,7 @@ import { Database } from "./supabase/database.types";
 import { Tag } from "@/types";
 
 type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
+type PictureInsert = Database["public"]["Tables"]["picture"]["Insert"];
 
 export abstract class DBHandler {
   constructor() {}
@@ -27,4 +28,6 @@ export abstract class DBHandler {
 
   abstract getTagById(tagId: string): Promise<Tag>;
   abstract createTag(value: string): Promise<Tag>;
+
+  abstract createNewImage(data: PictureInsert): Promise<boolean>;
 }

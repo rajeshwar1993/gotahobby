@@ -93,7 +93,7 @@ const EventPage = async () => {
           <input name="pictureType" value={"EVENT_GALLERY"} />
           <input
             name="eventId"
-            value={"0d55a6dc-4b44-4a18-9d6b-2f8acad01687"}
+            value={"9e33f1fe-4384-4d90-84c7-5c06e377368b"}
             readOnly
           />
           <input name="files" type="file" multiple />

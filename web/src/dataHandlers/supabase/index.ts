@@ -9,6 +9,7 @@ import { Event } from "@/types/event";
 import { GlanceUser, Picture, Tag } from "@/types";
 
 type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
+type PictureInsert = SupaDatabase["public"]["Tables"]["picture"]["Insert"];
 
 export class SupabaseHandler extends DBHandler {
   private logger;
@@ -305,5 +306,19 @@ export class SupabaseHandler extends DBHandler {
       id: tag.id,
       value: tag.value,
     };
+  }
+
+  async createNewImage(data: PictureInsert): Promise<boolean> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { error } = await this.supabaseClient.from("picture").insert([data]);
+
+    if (error) {
+      throw error;
+    }
+
+    return true;
   }
 }
