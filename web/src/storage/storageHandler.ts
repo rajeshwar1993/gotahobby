@@ -4,17 +4,16 @@ export type UploadResponse = {
   id: string;
   path: string;
   fullPath: string;
-} | null;
+};
 
 export abstract class StorageHandler {
   constructor() {}
-
-  abstract connect(): Promise<void>;
-  abstract disconnect(): Promise<void>;
 
   abstract uploadImage({
     file,
     pictureType,
     entityId,
   }: ImageStorageInput): Promise<UploadResponse>;
+
+  abstract getPublicImageURL(path: string): Promise<string>;
 }

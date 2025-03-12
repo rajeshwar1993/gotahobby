@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { Gallery } from "@/components/image-gallery";
 import { createPath } from "@/utils/url";
+import Form from "next/form";
+import { handleEventImageUpload } from "../actions";
 
 // Event Details Component
 const EventDetails = ({ event }) => (
@@ -85,6 +87,18 @@ const EventPage = async () => {
     <>
       {/* Banner and Title */}
       <div className="relative h-[300px] md:h-[400px] rounded-lg overflow-hidden mb-8">
+        <Form action={handleEventImageUpload}>
+          {/* On submission, the input value will be appended to
+          the URL, e.g. /search?query=abc */}
+          <input name="pictureType" value={"EVENT_GALLERY"} />
+          <input
+            name="eventId"
+            value={"0d55a6dc-4b44-4a18-9d6b-2f8acad01687"}
+            readOnly
+          />
+          <input name="files" type="file" multiple />
+          <button type="submit">Submit</button>
+        </Form>
         <img
           src={event.banner}
           alt="Event banner"

@@ -8,6 +8,8 @@ import {
   createSuccessResponse,
 } from "../../utils/response";
 import { z } from "zod";
+import { createClient } from "@/utils/supabase/server";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 
 export async function GET(
   request: Request,
@@ -29,10 +31,11 @@ export async function GET(
     // TODO: validate input params
 
     // fetch data from DB
-    const dbHandler = await createDBHandler("supabase");
-    await dbHandler.connect();
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+
     const event = await dbHandler.getTagById(tagId);
-    await dbHandler.disconnect();
+
     return createSuccessResponse(event);
   } catch (error: unknown) {
     return createErrorResponse(errorIdentifier, error);
@@ -67,9 +70,8 @@ export async function POST(
     const validatedData = tagCreateSchema.parse(body);
 
     // Initialize the database handler
-    const dbHandler = await createDBHandler("supabase");
-    await dbHandler.connect();
-    await dbHandler.disconnect();
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
     // Create the event in the database
     const response = await dbHandler.createTag(validatedData.value);
 

@@ -1,10 +1,6 @@
-import {
-  Database,
-  Database as SupaDatabase,
-} from "@/dataHandlers/supabase/database.types";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 import { Group } from "@/types/group";
 import axios from "axios";
-import { createClient } from "@/utils/supabase/server";
 import { DBHandler } from "../dbHandler";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
@@ -12,22 +8,15 @@ import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
 import { GlanceUser, Picture, Tag } from "@/types";
 
-type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
+type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
 
 export class SupabaseHandler extends DBHandler {
   private logger;
   private supabaseClient: SupabaseClient<SupaDatabase> | null = null;
-  constructor() {
+  constructor(client: SupabaseClient<SupaDatabase>) {
     super();
     this.logger = new Logger();
-  }
-
-  async connect() {
-    this.supabaseClient = await createClient<SupaDatabase>();
-  }
-
-  async disconnect() {
-    this.supabaseClient = null;
+    this.supabaseClient = client;
   }
 
   async getPictureById(

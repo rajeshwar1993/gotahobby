@@ -1,7 +1,6 @@
 import { Logger } from "@/utils/supabase/logger";
 import { StorageHandler, UploadResponse } from "../storageHandler";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { createClient } from "@/utils/supabase/server";
 import { ImageStorageInput } from "..";
 import { PictureType } from "@/types";
 
@@ -9,17 +8,10 @@ export class SupabaseStorageHandler extends StorageHandler {
   private logger;
   private supabaseClient: SupabaseClient | null = null;
   private bucketName = "images";
-  constructor() {
+  constructor(client: SupabaseClient) {
     super();
     this.logger = new Logger();
-  }
-
-  async connect() {
-    this.supabaseClient = await createClient();
-  }
-
-  async disconnect() {
-    this.supabaseClient = null;
+    this.supabaseClient = client;
   }
 
   async uploadImage({
@@ -35,6 +27,8 @@ export class SupabaseStorageHandler extends StorageHandler {
     let path = "";
     let upsert = false;
     const cacheControl = "3600";
+
+    console.log("UPLOAD IMAGE", pictureType, parentId, entityId);
 
     switch (pictureType) {
       case PictureType.PROFILE_PICTURE:
@@ -72,5 +66,22 @@ export class SupabaseStorageHandler extends StorageHandler {
     }
 
     return data;
+  }
+
+  async getPublicImageURL(path: string): Promise<string> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data } = this.supabaseClient.storage
+      .from(this.bucketName)
+      .getPublicUrl(path);
+
+    if (!data || !data.publicUrl) {
+      this.logger.error("getPublicImageURL", "No public URL found");
+      throw new Error("No public URL found");
+    }
+
+    return data.publicUrl;
   }
 }

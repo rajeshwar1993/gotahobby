@@ -8,9 +8,6 @@ type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
 
 export abstract class DBHandler {
   constructor() {}
-
-  abstract connect(): Promise<void>;
-  abstract disconnect(): Promise<void>;
   abstract getPictureById(
     query: { type: "single"; id: string } | { type: "multiple"; ids: string[] }
   ): Promise<Picture | Picture[]>;

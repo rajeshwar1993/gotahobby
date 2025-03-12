@@ -9,6 +9,8 @@ import { Event, NewEventResponse } from "@/types";
 import { event_ObjToDB } from "@/dataHandlers/supabase/transformers";
 import { z } from "zod";
 import { CREATE_PARAM } from "@/app/constants";
+import { createClient } from "@/utils/supabase/server";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 
 export async function GET(
   request: NextRequest,
@@ -29,11 +31,13 @@ export async function GET(
 
     // TODO: validate input params
 
+    const supabaseClient = await createClient<SupaDatabase>();
+
     // fetch data from DB
-    const dbHandler = await createDBHandler("supabase");
-    await dbHandler.connect();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+
     const event = await dbHandler.getEventById(eventId);
-    await dbHandler.disconnect();
+
     return createSuccessResponse(event);
   } catch (error: unknown) {
     return createErrorResponse(errorIdentifier, error);
@@ -70,15 +74,15 @@ export async function POST(
     }
 
     // Initialize the database handler
-    const dbHandler = await createDBHandler("supabase");
-    await dbHandler.connect();
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
 
     // Create the event in the database
     const response = await dbHandler.createEvent(
       validatedData.title,
       validatedData.groupId
     );
-    await dbHandler.disconnect();
+
     // Return the newly created event ID and basic info
     return createSuccessResponse(
       {
@@ -111,11 +115,12 @@ export async function PATCH(
     const body = await request.json();
 
     // create db handler
-    const dbHandler = await createDBHandler("supabase");
-    await dbHandler.connect();
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+
     const data = event_ObjToDB(body);
     await dbHandler.updateEvent(eventId, data);
-    await dbHandler.disconnect();
+
     return createSuccessResponse({
       operation: "OK",
     });
@@ -141,7 +146,8 @@ export async function DELETE({
     // TODO: validate authorization
 
     // create gropup in DB
-    const dbHandler = await createDBHandler("supabase");
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
     await dbHandler.deleteEvent(eventId);
 
     return createSuccessResponse({
