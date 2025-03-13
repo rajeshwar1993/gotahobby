@@ -22,6 +22,10 @@ const saveSingleImage = async (
       "supabase",
       supabaseClient
     );
+
+    // TODO: reduce image size
+    // TODO: convert image to webp
+
     // save into storage
     const storageResult = await storageHandler.uploadImage({
       file,
@@ -55,6 +59,8 @@ export async function handleEventImageUpload(formData: FormData) {
     const pictureType = formData.get("pictureType") as PictureType;
     eventId = formData.get("eventId") as string;
     const files = formData.getAll("files") as File[];
+
+    // TODO: think about how to implement loading state for form submission
 
     // TODO: validate body using zod
 
