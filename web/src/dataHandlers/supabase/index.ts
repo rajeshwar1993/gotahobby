@@ -6,7 +6,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
 import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
-import { GlanceUser, Picture, Tag } from "@/types";
+import { GlanceUser, Picture, PictureType, Tag } from "@/types";
 
 type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
 type PictureInsert = SupaDatabase["public"]["Tables"]["picture"]["Insert"];
@@ -117,9 +117,50 @@ export class SupabaseHandler extends DBHandler {
   }
 
   async getGroupById(groupId: string): Promise<Group> {
-    const response = await axios.get("http://localhost:3090/api/group");
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
 
-    return response.data;
+    const { data: dbGroup, error } = await this.supabaseClient
+      .from("group")
+      .select("*")
+      .eq("id", groupId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    // Fetch the banner image if it exists
+    const bannerImage = dbGroup.bannerImage
+      ? await this.getPictureById({ type: "single", id: dbGroup.bannerImage })
+      : undefined;
+
+    const photos = dbGroup.photos
+      ? await this.getPictureById({ type: "multiple", ids: dbGroup.photos })
+      : [];
+
+    // Fetch tags if they exist
+    const tags = dbGroup.tags ? await this.getTagsByIds(dbGroup.tags) : [];
+
+    // Fetch members if they exist
+    const members = dbGroup.members
+      ? await this.getGlanceUsersByIds(dbGroup.members)
+      : [];
+
+    // Transform the database group object to a client-side Group object
+    const group: Group = {
+      id: dbGroup.id,
+      createdAtUTC: dbGroup.created_at,
+      name: dbGroup.title || "",
+      coverPicture: bannerImage && bannerImage[0],
+      photos,
+      bio: dbGroup.bio,
+      tags,
+      members,
+    };
+
+    return group;
   }
 
   async getEventById(eventId: string): Promise<Event> {
