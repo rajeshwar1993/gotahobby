@@ -68,12 +68,14 @@ export async function POST(
     // Parse and validate the request body
     const body = await request.json();
     const validatedData = tagCreateSchema.parse(body);
+    // TODO: add a unique constraint to the tag value in DB
+    const value = validatedData.value.toLocaleLowerCase();
 
     // Initialize the database handler
     const supabaseClient = await createClient<SupaDatabase>();
     const dbHandler = await createDBHandler("supabase", supabaseClient);
     // Create the event in the database
-    const response = await dbHandler.createTag(validatedData.value);
+    const response = await dbHandler.createTag(value);
 
     // Return the newly created event ID and basic info
     return createSuccessResponse(
