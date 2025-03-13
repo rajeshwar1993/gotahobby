@@ -1,62 +1,110 @@
-import { Bio, Entity, Picture, Tag, TimeStats } from "./generics";
+import {
+  Bio,
+  Entity,
+  Picture,
+  CurrencyAmount,
+  Tag,
+  TimeStats,
+  GlanceUser,
+} from ".";
 
 export type EventBasic = Entity &
   TimeStats & {
     title: string;
-    coverPicture: Picture;
+    bannerImage?: Picture;
   };
 
-export type NewEventResponse = Entity &
-  TimeStats & {
-    name: string;
+export type NewEventResponse = Entity;
+
+enum EventLocationType {
+  OFFLINE = "OFFLINE",
+  ONLINE = "ONLINE",
+  BOTH = "BOTH",
+}
+
+type OfflineEventLocation = {
+  address: string;
+  city?: string;
+  state?: string;
+  country: string;
+  postalCode?: string;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
   };
-
-export type Event = EventBasic & {
-  bio: Bio;
-  tags: Array<Tag>;
-
-  // TODO types
-  //   location
-  //   timings
-  //   hobbyGroup: // ID of the group
-  //   attendies
-  //   host
-  //   discussion
-  //   photos
-  //   capacity: number;
-  // status: 'draft' | 'published' | 'cancelled' | 'completed';
-  //   price: {
-  //     amount: number;
-  //     currency: string;
-  //   };
-
-  // isPublic: boolean;
+  mapLocationUrl?: string;
 };
+
+type OnlineEventLocation = {
+  conferenceURL: string;
+  conferencePassord?: string;
+};
+
+type EventLocation =
+  | {
+      tbd: true;
+      location: null;
+    }
+  | {
+      tdb: false;
+      location:
+        | {
+            type: EventLocationType.OFFLINE;
+            details: OfflineEventLocation;
+          }
+        | {
+            type: EventLocationType.ONLINE;
+            details: OnlineEventLocation;
+          }
+        | {
+            type: EventLocationType.BOTH;
+            offlineDetails: OfflineEventLocation;
+            onlineDetails: OnlineEventLocation;
+          };
+    };
+
+type EventTiming =
+  | {
+      tbd: false;
+      startDate: string;
+      endDate: string;
+    }
+  | { tbd: true };
+
+enum AttendeeStatus {
+  CONFIRMED = "confirmed",
+  WAITING = "waiting",
+  CANCELLED = "cancelled",
+  APPLIED = "applied",
+}
 
 type EventAttendee = {
   id: string;
   name: string;
-  email: string;
-  registrationDate: Date;
-  status: "confirmed" | "pending" | "cancelled";
-  ticketType: string;
+  picture: string;
+  registrationDate: string;
+  status: AttendeeStatus;
 };
 
-// types/notifications.ts
-export type NotificationType =
-  | "event_reminder"
-  | "new_attendee"
-  | "event_update"
-  | "message"
-  | "system";
+enum EventStatus {
+  DRAFT = "draft",
+  PUBLISHED = "published",
+  CANCELLED = "cancelled",
+  FINISHED = "finished",
+}
 
-export type Notification = {
-  id: string;
-  type: NotificationType;
-  title: string;
-  message: string;
-  timestamp: string;
-  read: boolean;
-  actionUrl?: string;
-  image?: string;
+export type Event = EventBasic & {
+  bio: Bio;
+  tags: Array<Tag>;
+  timing: EventTiming;
+  location: EventLocation;
+  groupID: string;
+  attendies: EventAttendee[];
+  host: GlanceUser[];
+  //   discussion
+  photos: Picture[];
+  capacity: number;
+  status: EventStatus;
+  fee: CurrencyAmount;
+  isPublic: boolean;
 };

@@ -84,7 +84,7 @@ export async function loginAction(formData: FormData): Promise<ActionResponse> {
     return {
       success: true,
     };
-  } catch (error) {
+  } catch (_) {
     // Handle unexpected errors
     return {
       success: false,

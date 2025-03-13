@@ -7,8 +7,11 @@ export type Result = {
 };
 
 export type CustomError = {
+  errorIdentifier: string;
+  origin: string;
   message: string;
-  code: string;
+  code?: string;
+  name?: string;
 };
 
 export type APISuccessResponse<T> = {

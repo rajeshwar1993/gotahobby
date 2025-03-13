@@ -1,11 +1,11 @@
-import { MockDataHandler } from "./mockFetcher";
-import { FirebaseHandler } from "./firebase";
+import { SupabaseHandler } from "./supabase";
+import { DBHandler } from "./dbHandler";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 
-export class DBHandler {
-  static get(env: string = "local") {
-    if (env === "firebase") {
-      return new FirebaseHandler();
-    }
-    return new MockDataHandler();
-  }
+export async function createDBHandler(
+  env: "supabase" | "local" = "local",
+  client: SupabaseClient<SupaDatabase>
+): Promise<DBHandler> {
+  return new SupabaseHandler(client);
 }

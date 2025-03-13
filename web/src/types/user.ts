@@ -1,54 +1,58 @@
 import { Entity, TimeStats } from "./generics";
+import { Picture } from "./picture";
+
+export type GlanceUser = Entity & {
+  displayName: string;
+  displayPicture?: Picture;
+};
 
 export type User = Entity &
   TimeStats & {
     // Basic information
     username?: string;
     email: string;
-    password: string;
-    firstName?: string;
-    lastName?: string;
+    fullName: string;
 
     // Profile details
     displayName: string;
-    avatar?: string;
+    // avatar?: string;
     bio?: string;
     dateOfBirth?: string;
     phoneNumber?: string;
 
     // Address information
-    address?: {
-      street?: string;
-      city?: string;
-      state?: string;
-      country?: string;
-      postalCode?: string;
-    };
+    // address?: {
+    //   street?: string;
+    //   city?: string;
+    //   state?: string;
+    //   country?: string;
+    //   postalCode?: string;
+    // };
 
     // Account status and preferences
     isActive: boolean;
     isVerified: boolean;
-    isTwoFactorEnabled: boolean;
-    preferredLanguage?: string;
-    timezone?: string;
+    // isTwoFactorEnabled: boolean;
+    // preferredLanguage?: string;
+    // timezone?: string;
 
     // Social connections
-    followers?: number;
-    following?: number;
+    // followers?: number;
+    // following?: number;
 
     // Security and privacy
-    roles: string[];
-    permissions?: string[];
-    privacySettings?: {
-      isProfilePublic: boolean;
-      showEmail: boolean;
-      showPhoneNumber: boolean;
-    };
+    // roles: string[];
+    // permissions?: string[];
+    // privacySettings?: {
+    //   isProfilePublic: boolean;
+    //   showEmail: boolean;
+    //   showPhoneNumber: boolean;
+    // };
 
     // Notification preferences
-    notificationSettings?: {
-      email: boolean;
-      push: boolean;
-      sms: boolean;
-    };
+    // notificationSettings?: {
+    //   email: boolean;
+    //   push: boolean;
+    //   sms: boolean;
+    // };
   };

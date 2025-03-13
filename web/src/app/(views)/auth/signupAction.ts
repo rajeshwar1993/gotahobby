@@ -51,10 +51,11 @@ export async function signupAction(
   formData: FormData
 ): Promise<ActionResponse> {
   let supabase;
+  let isLoginSuccess = true;
 
   try {
     supabase = await createClient();
-  } catch (error) {
+  } catch (_) {
     return {
       success: false,
       errors: {
@@ -130,9 +131,8 @@ export async function signupAction(
     // Create user record in database
     const { error: dbError } = await supabase.from("users").insert({
       id: authData.user.id,
-      display_name: displayName,
+      displayName: displayName,
       email: email,
-      created_at: new Date().toISOString(),
     });
 
     if (dbError) {
@@ -146,16 +146,24 @@ export async function signupAction(
         },
       };
     }
-
-    // Successful signup and profile creation
-    redirect("/");
   } catch (error) {
+    isLoginSuccess = false;
     // Handle unexpected errors
     return {
       success: false,
       errors: {
         _form: ["An unexpected error occurred. Please try again later."],
       },
+    };
+  } finally {
+    if (isLoginSuccess) redirect("/");
+    return {
+      success: isLoginSuccess,
+      errors: isLoginSuccess
+        ? {
+            _form: ["An unexpected error occurred. Please try again later."],
+          }
+        : undefined,
     };
   }
 }
