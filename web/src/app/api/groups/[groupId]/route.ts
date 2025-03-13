@@ -63,11 +63,21 @@ export async function POST(
     const validatedData = eventGroupSchema.parse(body);
     const groupTitle = validatedData.title;
 
-    // TODO: find the authenticated user's uuid
-    const createdBy = "aabd04f0-78e5-42b0-b254-e71b36578ed9";
+    // create supabase client
+    const supabaseClient = await createClient<SupaDatabase>();
+
+    // TODO Get the current authenticated user from Supabase
+    // const {
+    //   data: { user },
+    // } = await supabaseClient.auth.getUser();
+    // if (!user) {
+    //   throw new Error("User not authenticated");
+    // }
+    // const createdBy = user.id;
+
+    const createdBy = "bfcf248b-aab8-40e8-aaa4-f1fb04270e0a"; // TODO: replace with actual user ID
 
     // create group in DB
-    const supabaseClient = await createClient<SupaDatabase>();
     const dbHandler = await createDBHandler("supabase", supabaseClient);
     const response = await dbHandler.createGroup({
       title: groupTitle?.toString(),
@@ -77,7 +87,6 @@ export async function POST(
     return createSuccessResponse(
       {
         id: response.id,
-        name: groupTitle?.toString() || "",
       },
       {
         status: 201,
@@ -103,9 +112,11 @@ export async function PATCH(
 
     // TODO: validate authorization
 
-    // create group in DB
-    const dbHandler = DBHandler.get();
-    const response = await dbHandler.updateGroup(id, groupName?.toString());
+    // TODO: implement updateGroup method in SupabaseHandler
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    // const response = await dbHandler.updateGroup(id, groupName?.toString());
+    throw new Error("updateGroup method not implemented");
 
     return createSuccessResponse({
       operation: "OK",
@@ -128,9 +139,11 @@ export async function DELETE({
 
     // TODO: validate authorization
 
-    // create group in DB
-    const dbHandler = DBHandler.get();
-    await dbHandler.deleteGroup(groupId);
+    // TODO: implement deleteGroup method in SupabaseHandler
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    // await dbHandler.deleteGroup(groupId);
+    throw new Error("deleteGroup method not implemented");
 
     return createSuccessResponse({
       operation: "OK",
