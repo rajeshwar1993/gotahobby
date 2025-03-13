@@ -49,9 +49,7 @@ export function event_DBToObj({
   };
 
   // 3. Transform bio
-  const bio: Bio = {
-    text: dbEvent.bio || "",
-  };
+  const bio: Bio = dbEvent.bio as Bio;
 
   // 5. Transform timing from JSON
   const timing = dbEvent.timings

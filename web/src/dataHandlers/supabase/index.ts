@@ -6,8 +6,9 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
 import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
-import { GlanceUser, Picture, PictureType, Tag } from "@/types";
+import { Bio, GlanceUser, Picture, PictureType, Tag } from "@/types";
 
+type GroupInsert = SupaDatabase["public"]["Tables"]["group"]["Insert"];
 type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
 type PictureInsert = SupaDatabase["public"]["Tables"]["picture"]["Insert"];
 
@@ -155,7 +156,7 @@ export class SupabaseHandler extends DBHandler {
       name: dbGroup.title || "",
       coverPicture: bannerImage && bannerImage[0],
       photos,
-      bio: dbGroup.bio,
+      bio: dbGroup.bio as Bio,
       tags,
       members,
     };

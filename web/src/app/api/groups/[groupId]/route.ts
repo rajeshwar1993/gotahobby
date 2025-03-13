@@ -8,6 +8,7 @@ import { Group, NewGroupResponse } from "@/types/group";
 import { createClient } from "@/utils/supabase/server";
 import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 import { createDBHandler } from "@/dataHandlers";
+import { CREATE_PARAM } from "@/app/constants";
 
 export async function GET(
   request: Request,
@@ -20,6 +21,9 @@ export async function GET(
   const errorIdentifier = "GET group by ID";
   try {
     const groupId = (await params).groupId;
+    if (groupId === CREATE_PARAM) {
+      throw new Error("Invalid event ID");
+    }
 
     // TODO: validate input params
 
@@ -35,26 +39,39 @@ export async function GET(
 }
 
 export async function POST(
-  request: NextRequest
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ groupId: string }>;
+  }
 ): Promise<NextResponse<APIResponse<NewGroupResponse>>> {
   const errorIdentifier = "Create new group";
   try {
+    const groupId = (await params).groupId;
+    if (groupId !== CREATE_PARAM) {
+      throw new Error("Invalid event ID");
+    }
+
     const formData = await request.formData();
     const groupName = formData.get("name");
-    const newGroupUUID = "1111-1111"; // TODO: create new group id
 
-    // TODO: validate data
+    // TODO: find the authenticated user's uuid
+    const createdBy = "aabd04f0-78e5-42b0-b254-e71b36578ed9";
+
+    // TODO: validate input data
 
     // create group in DB
-    const dbHandler = DBHandler.get();
-    const response = await dbHandler.createGroup(
-      newGroupUUID,
-      groupName?.toString()
-    );
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    const response = await dbHandler.createGroup({
+      title: groupName?.toString(),
+      createdBy,
+    });
 
     return createSuccessResponse(
       {
-        id: newGroupUUID,
+        id: response.id,
         name: groupName?.toString() || "",
       },
       {
