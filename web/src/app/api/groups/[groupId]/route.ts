@@ -1,5 +1,3 @@
-import { DBHandler } from "@/dataHandlers";
-import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import {
   createErrorResponse,
@@ -7,6 +5,9 @@ import {
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
 import { Group, NewGroupResponse } from "@/types/group";
+import { createClient } from "@/utils/supabase/server";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
+import { createDBHandler } from "@/dataHandlers";
 
 export async function GET(
   request: Request,
@@ -20,15 +21,12 @@ export async function GET(
   try {
     const groupId = (await params).groupId;
 
-    // TODO: authenticate request
-
     // TODO: validate input params
 
     // fetch data from DB
-    const dbHandler = DBHandler.get();
-    const group = await dbHandler.getGroup(groupId);
-
-    // TODO: validate response
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    const group = await dbHandler.getGroupById(groupId);
 
     return createSuccessResponse(group);
   } catch (error: unknown) {
