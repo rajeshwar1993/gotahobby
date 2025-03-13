@@ -9,6 +9,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
 import { createDBHandler } from "@/dataHandlers";
 import { CREATE_PARAM } from "@/app/constants";
+import { z } from "zod";
 
 export async function GET(
   request: Request,
@@ -38,6 +39,11 @@ export async function GET(
   }
 }
 
+// Define the validation schema for event creation
+const eventGroupSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+});
+
 export async function POST(
   request: NextRequest,
   {
@@ -53,26 +59,25 @@ export async function POST(
       throw new Error("Invalid event ID");
     }
 
-    const formData = await request.formData();
-    const groupName = formData.get("name");
+    const body = await request.json();
+    const validatedData = eventGroupSchema.parse(body);
+    const groupTitle = validatedData.title;
 
     // TODO: find the authenticated user's uuid
     const createdBy = "aabd04f0-78e5-42b0-b254-e71b36578ed9";
-
-    // TODO: validate input data
 
     // create group in DB
     const supabaseClient = await createClient<SupaDatabase>();
     const dbHandler = await createDBHandler("supabase", supabaseClient);
     const response = await dbHandler.createGroup({
-      title: groupName?.toString(),
+      title: groupTitle?.toString(),
       createdBy,
     });
 
     return createSuccessResponse(
       {
         id: response.id,
-        name: groupName?.toString() || "",
+        name: groupTitle?.toString() || "",
       },
       {
         status: 201,

@@ -306,6 +306,36 @@ export class SupabaseHandler extends DBHandler {
 
   async deleteEvent(eventId: string): Promise<void> {}
 
+  // Override the createGroup method from DBHandler
+  async createGroup(input: {
+    title?: string;
+    createdBy: string;
+  }): Promise<{ id: string }> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: group, error } = await this.supabaseClient
+      .from("group")
+      .insert({
+        title: input.title || "New Group", // Default name if none provided
+        created_at: new Date().toISOString(),
+        createdBy: input.createdBy, // Required field
+        members: [input.createdBy], // Add creator as first member
+        tags: [], // Default empty array
+        photos: [], // Default empty array
+      })
+      .select()
+      .single();
+
+    if (error) {
+      this.logger.error("createGroup", error);
+      throw error;
+    }
+
+    return { id: group.id };
+  }
+
   async getTagById(tagId: string): Promise<Tag> {
     if (!this.supabaseClient) {
       throw new Error("Supabase client not initialized");

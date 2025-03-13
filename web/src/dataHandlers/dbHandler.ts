@@ -23,6 +23,11 @@ export abstract class DBHandler {
     groupId: string
   ): Promise<{ id: string }>;
 
+  abstract createGroup(data: {
+    title?: string;
+    createdBy: string;
+  }): Promise<{ id: string }>;
+
   abstract updateEvent(eventId: string, data: UpdateEvent): Promise<void>;
   abstract deleteEvent(eventId: string): Promise<void>;
 
