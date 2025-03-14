@@ -8,7 +8,7 @@ import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
 import { Bio, GlanceUser, Picture, PictureType, Tag } from "@/types";
 
-type GroupInsert = SupaDatabase["public"]["Tables"]["group"]["Insert"];
+type UpdateGroup = SupaDatabase["public"]["Tables"]["group"]["Update"];
 type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
 type PictureInsert = SupaDatabase["public"]["Tables"]["picture"]["Insert"];
 
@@ -164,6 +164,52 @@ export class SupabaseHandler extends DBHandler {
     return group;
   }
 
+  // Override the createGroup method from DBHandler
+  async createGroup(input: {
+    title?: string;
+    createdBy: string;
+  }): Promise<{ id: string }> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: group, error } = await this.supabaseClient
+      .from("group")
+      .insert({
+        title: input.title || "New Group", // Default name if none provided
+        created_at: new Date().toISOString(),
+        createdBy: input.createdBy, // Required field
+        members: [input.createdBy], // Add creator as first member
+        tags: [], // Default empty array
+        photos: [], // Default empty array
+      })
+      .select()
+      .single();
+
+    if (error) {
+      this.logger.error("createGroup", error);
+      throw error;
+    }
+
+    return { id: group.id };
+  }
+
+  async updateGroup(eventId: string, data: UpdateGroup): Promise<void> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { error } = await this.supabaseClient
+      .from("group")
+      .update(data)
+      .eq("id", eventId);
+
+    if (error) {
+      this.logger.error("updateEvent", error);
+      throw error;
+    }
+  }
+
   async getEventById(eventId: string): Promise<Event> {
     if (!this.supabaseClient) {
       throw new Error("Supabase client not initialized");
@@ -305,36 +351,6 @@ export class SupabaseHandler extends DBHandler {
   }
 
   async deleteEvent(eventId: string): Promise<void> {}
-
-  // Override the createGroup method from DBHandler
-  async createGroup(input: {
-    title?: string;
-    createdBy: string;
-  }): Promise<{ id: string }> {
-    if (!this.supabaseClient) {
-      throw new Error("Supabase client not initialized");
-    }
-
-    const { data: group, error } = await this.supabaseClient
-      .from("group")
-      .insert({
-        title: input.title || "New Group", // Default name if none provided
-        created_at: new Date().toISOString(),
-        createdBy: input.createdBy, // Required field
-        members: [input.createdBy], // Add creator as first member
-        tags: [], // Default empty array
-        photos: [], // Default empty array
-      })
-      .select()
-      .single();
-
-    if (error) {
-      this.logger.error("createGroup", error);
-      throw error;
-    }
-
-    return { id: group.id };
-  }
 
   async getTagById(tagId: string): Promise<Tag> {
     if (!this.supabaseClient) {

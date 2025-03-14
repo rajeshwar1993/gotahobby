@@ -6,9 +6,7 @@ export type GroupBasic = Entity &
     coverPicture?: Picture;
   };
 
-export type NewGroupResponse = Entity & {
-  name: string;
-};
+export type NewGroupResponse = Entity;
 
 export type Group = GroupBasic & {
   bio: Bio;

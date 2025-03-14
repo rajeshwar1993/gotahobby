@@ -4,6 +4,7 @@ import { Picture } from "@/types/picture";
 import { Database } from "./supabase/database.types";
 import { Tag } from "@/types";
 
+type UpdateGroup = Database["public"]["Tables"]["group"]["Update"];
 type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
 type PictureInsert = Database["public"]["Tables"]["picture"]["Insert"];
 
@@ -28,6 +29,7 @@ export abstract class DBHandler {
     createdBy: string;
   }): Promise<{ id: string }>;
 
+  abstract updateGroup(eventId: string, data: UpdateGroup): Promise<void>;
   abstract updateEvent(eventId: string, data: UpdateEvent): Promise<void>;
   abstract deleteEvent(eventId: string): Promise<void>;
 
