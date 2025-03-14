@@ -1,10 +1,6 @@
 import { APIResponse } from "./apiTypes";
-import { Entity, GlanceUser, TimeStats } from "./generics";
-
-export type Discussion = Entity & {
-  parentUUID: string;
-  parentCommentIDs: Array<string>;
-};
+import { Entity, TimeStats } from "./generics";
+import { GlanceUser } from "./user";
 
 export type CommentData = {
   text: string;
@@ -23,7 +19,7 @@ export type Comment = Entity &
   TimeStats &
   (ParentComment | ChildComment) & {
     author: GlanceUser;
-    parentID: string;
+    parentId: string;
     commentData: CommentData;
   };
 
