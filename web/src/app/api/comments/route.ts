@@ -46,10 +46,10 @@ const commentCreateSchema = z
       text: z.string().min(1, "Text is required"),
     }),
     associatedToType: z.enum(["GROUP", "EVENT"]),
-    associatedTo: z.string().uuid("Accociated ID is invalid"),
+    associatedTo: z.string().uuid("Associated ID is invalid"),
     author: z.string().uuid(),
     isParentComment: z.boolean(),
-    parentId: z.string().uuid(),
+    parentId: z.string().uuid().optional(),
   })
   .refine(
     (data) => {
