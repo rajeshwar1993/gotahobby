@@ -1,6 +1,6 @@
 export * from "./generics";
 export * from "./apiTypes";
-export * from "./dbHandler";
+export * from "./discussion";
 export * from "./group";
 export * from "./event";
 export * from "./picture";

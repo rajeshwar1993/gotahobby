@@ -1,8 +1,4 @@
-import {
-  Comment,
-  FetchCommentsResponse,
-  SaveCommentResponse,
-} from "@/types/discussion";
+import { FetchCommentsResponse, SaveCommentResponse } from "@/types/discussion";
 import { NextRequest, NextResponse } from "next/server";
 import { createErrorResponse, createSuccessResponse } from "../utils/response";
 import { OKResponse } from "@/types";
@@ -12,26 +8,21 @@ import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types
 import { z } from "zod";
 
 // Get the comments in param array
-export async function GET({
-  params,
-}: {
-  params: Promise<{ commentIDs: Array<string> }>;
-}): Promise<NextResponse<FetchCommentsResponse>> {
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<FetchCommentsResponse>> {
   const errorIdentifier = "Get Comments";
   try {
-    const commentIds = (await params).commentIDs;
-    // TODO: authenticate request
+    const commentIds = request.nextUrl.searchParams.getAll("ids");
 
-    // TODO: validate input params
+    // validate input params
+    const commentIdsSchema = z.array(z.string().uuid());
+    const validatedData = commentIdsSchema.parse(commentIds);
 
     // fetch data from DB
     const supabaseClient = await createClient<SupaDatabase>();
     const dbHandler = await createDBHandler("supabase", supabaseClient);
-    const comments = await dbHandler.getComments(commentIds);
-
-    // TODO: validate response
-
-    // TODO: transform data
+    const comments = await dbHandler.getComemntsByIDs(validatedData);
 
     return createSuccessResponse(comments);
   } catch (error: unknown) {

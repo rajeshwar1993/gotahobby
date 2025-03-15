@@ -6,7 +6,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
 import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
-import { Bio, GlanceUser, Picture, PictureType, Tag } from "@/types";
+import { Bio, GlanceUser, Picture, Comment, Tag, CommentData } from "@/types";
 
 type InsertComment = SupaDatabase["public"]["Tables"]["comment"]["Insert"];
 type UpdateGroup = SupaDatabase["public"]["Tables"]["group"]["Update"];
@@ -409,6 +409,46 @@ export class SupabaseHandler extends DBHandler {
     }
 
     return true;
+  }
+
+  async getComemntsByIDs(commentIds: string[]): Promise<Comment[]> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: dbComments, error } = await this.supabaseClient
+      .from("comment")
+      .select("*")
+      .in("id", commentIds);
+
+    if (error) {
+      throw error;
+    }
+
+    const comments: Comment[] = dbComments.map((dbComment) => {
+      const common = {
+        id: dbComment.id,
+        created_at: dbComment.created_at,
+        commentData: dbComment.commentData as CommentData,
+        author: dbComment.author,
+      };
+
+      if (dbComment.isParentComment) {
+        return {
+          ...common,
+          isParentComment: true,
+          childComments: [], // TODO: think how to handle this
+        };
+      }
+
+      return {
+        ...common,
+        isParentComment: false,
+        parentId: dbComment.parentId || "",
+      };
+    });
+
+    return comments;
   }
 
   async createNewComment(input: InsertComment): Promise<{ id: string }> {

@@ -1,6 +1,5 @@
 import { APIResponse } from "./apiTypes";
 import { Entity, TimeStats } from "./generics";
-import { GlanceUser } from "./user";
 
 export enum CommentAccociatedToType {
   EVENT = "EVENT",
@@ -18,13 +17,13 @@ export type ParentComment = {
 
 export type ChildComment = {
   isParentComment: false;
+  parentId: string;
 };
 
 export type Comment = Entity &
   TimeStats &
   (ParentComment | ChildComment) & {
-    author: GlanceUser;
-    parentId: string;
+    author: string;
     commentData: CommentData;
   };
 

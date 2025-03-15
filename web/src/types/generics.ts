@@ -3,7 +3,7 @@ export type Entity = {
 };
 
 export type TimeStats = {
-  createdAtUTC: string;
+  created_at: string;
 };
 
 export type Bio = {
