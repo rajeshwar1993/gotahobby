@@ -98,7 +98,7 @@ export async function PATCH(
   const errorIdentifier = "Create New Comments";
   try {
     const commentId = (await params).commentId;
-    // TODO: authenticate request
+    // TODO: Authorize request
 
     // TODO: validate authorization
 
@@ -125,7 +125,7 @@ export async function DELETE({
   const errorIdentifier = "Create New Comments";
   try {
     const commentId = (await params).commentId;
-    // TODO: authenticate request
+    // TODO: Authorize request
 
     // TODO: validate authorization
 
