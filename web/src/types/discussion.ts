@@ -1,10 +1,10 @@
 import { APIResponse } from "./apiTypes";
-import { Entity, GlanceUser, TimeStats } from "./generics";
+import { Entity, TimeStats } from "./generics";
 
-export type Discussion = Entity & {
-  parentUUID: string;
-  parentCommentIDs: Array<string>;
-};
+export enum CommentAccociatedToType {
+  EVENT = "EVENT",
+  GROUP = "GROUP",
+}
 
 export type CommentData = {
   text: string;
@@ -17,15 +17,15 @@ export type ParentComment = {
 
 export type ChildComment = {
   isParentComment: false;
+  parentId: string;
 };
 
 export type Comment = Entity &
   TimeStats &
   (ParentComment | ChildComment) & {
-    author: GlanceUser;
-    parentID: string;
+    author: string;
     commentData: CommentData;
   };
 
 export type FetchCommentsResponse = APIResponse<Array<Comment>>;
-export type SaveCommentResponse = APIResponse<Comment>;
+export type SaveCommentResponse = APIResponse<{ id: string }>;

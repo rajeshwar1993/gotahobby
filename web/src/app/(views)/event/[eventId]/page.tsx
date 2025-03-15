@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Gallery } from "@/components/image-gallery";
 import { createPath } from "@/utils/url";
 import Form from "next/form";
-import { handleEventImageUpload } from "../actions";
+import { handleEventImageUpload } from "@/app/serverActions/imageUpload";
 
 // Event Details Component
 const EventDetails = ({ event }) => (

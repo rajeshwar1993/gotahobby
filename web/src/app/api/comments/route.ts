@@ -1,34 +1,28 @@
-import { DBHandler } from "@/dataHandlers";
-import {
-  Comment,
-  FetchCommentsResponse,
-  SaveCommentResponse,
-} from "@/types/discussion";
+import { FetchCommentsResponse, SaveCommentResponse } from "@/types/discussion";
 import { NextRequest, NextResponse } from "next/server";
 import { createErrorResponse, createSuccessResponse } from "../utils/response";
-import { isAxiosError } from "axios";
 import { OKResponse } from "@/types";
+import { createClient } from "@/utils/supabase/server";
+import { createDBHandler } from "@/dataHandlers";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
+import { z } from "zod";
 
 // Get the comments in param array
-export async function GET({
-  params,
-}: {
-  params: Promise<{ commentIDs: Array<string> }>;
-}): Promise<NextResponse<FetchCommentsResponse>> {
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<FetchCommentsResponse>> {
   const errorIdentifier = "Get Comments";
   try {
-    const commentIds = (await params).commentIDs;
-    // TODO: authenticate request
+    const commentIds = request.nextUrl.searchParams.getAll("ids");
 
-    // TODO: validate input params
+    // validate input params
+    const commentIdsSchema = z.array(z.string().uuid());
+    const validatedData = commentIdsSchema.parse(commentIds);
 
     // fetch data from DB
-    const dbHandler = DBHandler.get();
-    const comments = await dbHandler.getComments(commentIds);
-
-    // TODO: validate response
-
-    // TODO: transform data
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    const comments = await dbHandler.getComemntsByIDs(validatedData);
 
     return createSuccessResponse(comments);
   } catch (error: unknown) {
@@ -36,28 +30,58 @@ export async function GET({
   }
 }
 
+// Define the validation schema for event creation
+const commentCreateSchema = z
+  .object({
+    commentData: z.object({
+      text: z.string().min(1, "Text is required"),
+    }),
+    associatedToType: z.enum(["GROUP", "EVENT"]),
+    associatedTo: z.string().uuid("Associated ID is invalid"),
+    author: z.string().uuid(),
+    isParentComment: z.boolean(),
+    parentId: z.string().uuid().optional(),
+  })
+  .refine(
+    (data) => {
+      return data.isParentComment ? !data.parentId : data.parentId;
+    },
+    { message: "Parent ID is required for child comments", path: ["parentId"] }
+  );
+
 export async function POST(
   request: NextRequest
 ): Promise<NextResponse<SaveCommentResponse>> {
-  const errorIdentifier = "Update Comments";
+  const errorIdentifier = "Create Comment";
   try {
     // TODO: authenticate request
     // TODO: validate authorization
 
-    const formData = await request.formData();
-    formData.entries;
-    const isParentComment = formData.get("isParentComment");
-    const parentID = formData.get("parentID");
-    const text = formData.get("text");
+    const body = await request.json();
     // TODO: validate input params
+    const validatedData = commentCreateSchema.parse(body);
 
     // save in DB
-    const newCommentId = "1111"; // TODO: create new ID
-    const newComment: Comment = {};
-    const dbHandler = DBHandler.get();
-    const response = await dbHandler.saveComments(newComment);
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    const response = await dbHandler.createNewComment({
+      commentData: validatedData.commentData,
+      associatedTo: validatedData.associatedTo,
+      associatedToType: validatedData.associatedToType,
+      isParentComment: validatedData.isParentComment,
+      parentId: validatedData.parentId || null,
+      author: validatedData.author,
+    });
 
-    return createSuccessResponse(newComment, { status: 201 });
+    // Return the newly created comment ID and basic info
+    return createSuccessResponse(
+      {
+        id: response.id,
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error: unknown) {
     return createErrorResponse(errorIdentifier, error);
   }
@@ -74,7 +98,7 @@ export async function PATCH(
   const errorIdentifier = "Create New Comments";
   try {
     const commentId = (await params).commentId;
-    // TODO: authenticate request
+    // TODO: Authorize request
 
     // TODO: validate authorization
 
@@ -101,7 +125,7 @@ export async function DELETE({
   const errorIdentifier = "Create New Comments";
   try {
     const commentId = (await params).commentId;
-    // TODO: authenticate request
+    // TODO: Authorize request
 
     // TODO: validate authorization
 

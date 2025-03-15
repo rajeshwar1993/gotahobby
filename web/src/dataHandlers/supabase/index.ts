@@ -6,8 +6,10 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Logger } from "@/utils/supabase/logger";
 import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
-import { GlanceUser, Picture, Tag } from "@/types";
+import { Bio, GlanceUser, Picture, Comment, Tag, CommentData } from "@/types";
 
+type InsertComment = SupaDatabase["public"]["Tables"]["comment"]["Insert"];
+type UpdateGroup = SupaDatabase["public"]["Tables"]["group"]["Update"];
 type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
 type PictureInsert = SupaDatabase["public"]["Tables"]["picture"]["Insert"];
 
@@ -117,9 +119,96 @@ export class SupabaseHandler extends DBHandler {
   }
 
   async getGroupById(groupId: string): Promise<Group> {
-    const response = await axios.get("http://localhost:3090/api/group");
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
 
-    return response.data;
+    const { data: dbGroup, error } = await this.supabaseClient
+      .from("group")
+      .select("*")
+      .eq("id", groupId)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    // Fetch the banner image if it exists
+    const bannerImage = dbGroup.bannerImage
+      ? await this.getPictureById({ type: "single", id: dbGroup.bannerImage })
+      : undefined;
+
+    const photos = dbGroup.photos
+      ? await this.getPictureById({ type: "multiple", ids: dbGroup.photos })
+      : [];
+
+    // Fetch tags if they exist
+    const tags = dbGroup.tags ? await this.getTagsByIds(dbGroup.tags) : [];
+
+    // Fetch members if they exist
+    const members = dbGroup.members
+      ? await this.getGlanceUsersByIds(dbGroup.members)
+      : [];
+
+    // Transform the database group object to a client-side Group object
+    const group: Group = {
+      id: dbGroup.id,
+      createdAtUTC: dbGroup.created_at,
+      name: dbGroup.title || "",
+      coverPicture: bannerImage && bannerImage[0],
+      photos,
+      bio: dbGroup.bio as Bio,
+      tags,
+      members,
+    };
+
+    return group;
+  }
+
+  // Override the createGroup method from DBHandler
+  async createGroup(input: {
+    title?: string;
+    createdBy: string;
+  }): Promise<{ id: string }> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: group, error } = await this.supabaseClient
+      .from("group")
+      .insert({
+        title: input.title || "New Group", // Default name if none provided
+        created_at: new Date().toISOString(),
+        createdBy: input.createdBy, // Required field
+        members: [input.createdBy], // Add creator as first member
+        tags: [], // Default empty array
+        photos: [], // Default empty array
+      })
+      .select()
+      .single();
+
+    if (error) {
+      this.logger.error("createGroup", error);
+      throw error;
+    }
+
+    return { id: group.id };
+  }
+
+  async updateGroup(eventId: string, data: UpdateGroup): Promise<void> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { error } = await this.supabaseClient
+      .from("group")
+      .update(data)
+      .eq("id", eventId);
+
+    if (error) {
+      this.logger.error("updateEvent", error);
+      throw error;
+    }
   }
 
   async getEventById(eventId: string): Promise<Event> {
@@ -320,5 +409,65 @@ export class SupabaseHandler extends DBHandler {
     }
 
     return true;
+  }
+
+  async getComemntsByIDs(commentIds: string[]): Promise<Comment[]> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: dbComments, error } = await this.supabaseClient
+      .from("comment")
+      .select("*")
+      .in("id", commentIds);
+
+    if (error) {
+      throw error;
+    }
+
+    const comments: Comment[] = dbComments.map((dbComment) => {
+      const common = {
+        id: dbComment.id,
+        created_at: dbComment.created_at,
+        commentData: dbComment.commentData as CommentData,
+        author: dbComment.author,
+      };
+
+      if (dbComment.isParentComment) {
+        return {
+          ...common,
+          isParentComment: true,
+          childComments: [], // TODO: think how to handle this
+        };
+      }
+
+      return {
+        ...common,
+        isParentComment: false,
+        parentId: dbComment.parentId || "",
+      };
+    });
+
+    return comments;
+  }
+
+  async createNewComment(input: InsertComment): Promise<{ id: string }> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: comment, error } = await this.supabaseClient
+      .from("comment")
+      .insert(input)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      id: comment.id,
+    };
   }
 }

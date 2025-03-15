@@ -1,5 +1,3 @@
-import { DBHandler } from "@/dataHandlers";
-import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import {
   createErrorResponse,
@@ -7,6 +5,11 @@ import {
 } from "../../utils/response";
 import { APIResponse, OKResponse } from "@/types/apiTypes";
 import { Group, NewGroupResponse } from "@/types/group";
+import { createClient } from "@/utils/supabase/server";
+import { Database as SupaDatabase } from "@/dataHandlers/supabase/database.types";
+import { createDBHandler } from "@/dataHandlers";
+import { CREATE_PARAM } from "@/app/constants";
+import { z } from "zod";
 
 export async function GET(
   request: Request,
@@ -19,16 +22,16 @@ export async function GET(
   const errorIdentifier = "GET group by ID";
   try {
     const groupId = (await params).groupId;
-
-    // TODO: authenticate request
+    if (groupId === CREATE_PARAM) {
+      throw new Error("Invalid event ID");
+    }
 
     // TODO: validate input params
 
     // fetch data from DB
-    const dbHandler = DBHandler.get();
-    const group = await dbHandler.getGroup(groupId);
-
-    // TODO: validate response
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    const group = await dbHandler.getGroupById(groupId);
 
     return createSuccessResponse(group);
   } catch (error: unknown) {
@@ -36,28 +39,54 @@ export async function GET(
   }
 }
 
+// Define the validation schema for event creation
+const eventGroupSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+});
+
 export async function POST(
-  request: NextRequest
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ groupId: string }>;
+  }
 ): Promise<NextResponse<APIResponse<NewGroupResponse>>> {
   const errorIdentifier = "Create new group";
   try {
-    const formData = await request.formData();
-    const groupName = formData.get("name");
-    const newGroupUUID = "1111-1111"; // TODO: create new group id
+    const groupId = (await params).groupId;
+    if (groupId !== CREATE_PARAM) {
+      throw new Error("Invalid event ID");
+    }
 
-    // TODO: validate data
+    const body = await request.json();
+    const validatedData = eventGroupSchema.parse(body);
+    const groupTitle = validatedData.title;
+
+    // create supabase client
+    const supabaseClient = await createClient<SupaDatabase>();
+
+    // TODO Get the current authenticated user from Supabase
+    // const {
+    //   data: { user },
+    // } = await supabaseClient.auth.getUser();
+    // if (!user) {
+    //   throw new Error("User not authenticated");
+    // }
+    // const createdBy = user.id;
+
+    const createdBy = "bfcf248b-aab8-40e8-aaa4-f1fb04270e0a"; // TODO: replace with actual user ID
 
     // create group in DB
-    const dbHandler = DBHandler.get();
-    const response = await dbHandler.createGroup(
-      newGroupUUID,
-      groupName?.toString()
-    );
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    const response = await dbHandler.createGroup({
+      title: groupTitle?.toString(),
+      createdBy,
+    });
 
     return createSuccessResponse(
       {
-        id: newGroupUUID,
-        name: groupName?.toString() || "",
+        id: response.id,
       },
       {
         status: 201,
@@ -83,9 +112,11 @@ export async function PATCH(
 
     // TODO: validate authorization
 
-    // create group in DB
-    const dbHandler = DBHandler.get();
-    const response = await dbHandler.updateGroup(id, groupName?.toString());
+    // TODO: implement updateGroup method in SupabaseHandler
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    // const response = await dbHandler.updateGroup(id, groupName?.toString());
+    throw new Error("updateGroup method not implemented");
 
     return createSuccessResponse({
       operation: "OK",
@@ -108,9 +139,11 @@ export async function DELETE({
 
     // TODO: validate authorization
 
-    // create group in DB
-    const dbHandler = DBHandler.get();
-    await dbHandler.deleteGroup(groupId);
+    // TODO: implement deleteGroup method in SupabaseHandler
+    const supabaseClient = await createClient<SupaDatabase>();
+    const dbHandler = await createDBHandler("supabase", supabaseClient);
+    // await dbHandler.deleteGroup(groupId);
+    throw new Error("deleteGroup method not implemented");
 
     return createSuccessResponse({
       operation: "OK",

@@ -1,9 +1,8 @@
-import { Group } from "@/types/group";
-import { Event } from "@/types/event";
-import { Picture } from "@/types/picture";
 import { Database } from "./supabase/database.types";
-import { Tag } from "@/types";
+import { Tag, Comment, Picture, Event, Group } from "@/types";
 
+type InsertComment = Database["public"]["Tables"]["comment"]["Insert"];
+type UpdateGroup = Database["public"]["Tables"]["group"]["Update"];
 type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
 type PictureInsert = Database["public"]["Tables"]["picture"]["Insert"];
 
@@ -23,6 +22,12 @@ export abstract class DBHandler {
     groupId: string
   ): Promise<{ id: string }>;
 
+  abstract createGroup(data: {
+    title?: string;
+    createdBy: string;
+  }): Promise<{ id: string }>;
+
+  abstract updateGroup(eventId: string, data: UpdateGroup): Promise<void>;
   abstract updateEvent(eventId: string, data: UpdateEvent): Promise<void>;
   abstract deleteEvent(eventId: string): Promise<void>;
 
@@ -30,4 +35,6 @@ export abstract class DBHandler {
   abstract createTag(value: string): Promise<Tag>;
 
   abstract createNewImage(data: PictureInsert): Promise<boolean>;
+  abstract getComemntsByIDs(commentIds: string[]): Promise<Comment[]>;
+  abstract createNewComment(data: InsertComment): Promise<{ id: string }>;
 }

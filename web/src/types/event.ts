@@ -7,6 +7,7 @@ import {
   TimeStats,
   GlanceUser,
 } from ".";
+import { Comment } from "./discussion";
 
 export type EventBasic = Entity &
   TimeStats & {
@@ -98,10 +99,14 @@ export type Event = EventBasic & {
   tags: Array<Tag>;
   timing: EventTiming;
   location: EventLocation;
+  flagDates: {
+    rsvpStart: string;
+    rsvpEnd: string;
+  };
   groupID: string;
   attendies: EventAttendee[];
   host: GlanceUser[];
-  //   discussion
+  discussion: Comment[];
   photos: Picture[];
   capacity: number;
   status: EventStatus;

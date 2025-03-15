@@ -49,9 +49,7 @@ export function event_DBToObj({
   };
 
   // 3. Transform bio
-  const bio: Bio = {
-    text: dbEvent.bio || "",
-  };
+  const bio: Bio = dbEvent.bio as Bio;
 
   // 5. Transform timing from JSON
   const timing = dbEvent.timings
@@ -86,7 +84,12 @@ export function event_DBToObj({
     groupID: dbEvent.groupId || "",
     attendies: [], // Would need to fetch from a separate table
     host: hosts,
+    flagDates: {
+      rsvpStart: "", // TODO: Add this to the database
+      rsvpEnd: "",
+    },
     photos,
+    discussion: [], // Would need to fetch from a separate table
     capacity: dbEvent.capacity || 0,
     status: dbEvent.status || ("draft" as any), // Using string as enum value
     fee,
