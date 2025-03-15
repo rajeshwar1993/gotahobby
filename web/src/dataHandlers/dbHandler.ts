@@ -4,6 +4,7 @@ import { Picture } from "@/types/picture";
 import { Database } from "./supabase/database.types";
 import { Tag } from "@/types";
 
+type InsertComment = Database["public"]["Tables"]["comment"]["Insert"];
 type UpdateGroup = Database["public"]["Tables"]["group"]["Update"];
 type UpdateEvent = Database["public"]["Tables"]["event"]["Update"];
 type PictureInsert = Database["public"]["Tables"]["picture"]["Insert"];
@@ -37,4 +38,6 @@ export abstract class DBHandler {
   abstract createTag(value: string): Promise<Tag>;
 
   abstract createNewImage(data: PictureInsert): Promise<boolean>;
+
+  abstract createNewComment(data: InsertComment): Promise<{ id: string }>;
 }

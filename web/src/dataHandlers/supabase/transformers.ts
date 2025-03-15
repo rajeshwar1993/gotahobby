@@ -84,7 +84,12 @@ export function event_DBToObj({
     groupID: dbEvent.groupId || "",
     attendies: [], // Would need to fetch from a separate table
     host: hosts,
+    flagDates: {
+      rsvpStart: "", // TODO: Add this to the database
+      rsvpEnd: "",
+    },
     photos,
+    discussion: [], // Would need to fetch from a separate table
     capacity: dbEvent.capacity || 0,
     status: dbEvent.status || ("draft" as any), // Using string as enum value
     fee,

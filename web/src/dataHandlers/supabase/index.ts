@@ -8,6 +8,7 @@ import { event_DBToObj, picture_DBToObj } from "./transformers";
 import { Event } from "@/types/event";
 import { Bio, GlanceUser, Picture, PictureType, Tag } from "@/types";
 
+type InsertComment = SupaDatabase["public"]["Tables"]["comment"]["Insert"];
 type UpdateGroup = SupaDatabase["public"]["Tables"]["group"]["Update"];
 type UpdateEvent = SupaDatabase["public"]["Tables"]["event"]["Update"];
 type PictureInsert = SupaDatabase["public"]["Tables"]["picture"]["Insert"];
@@ -408,5 +409,25 @@ export class SupabaseHandler extends DBHandler {
     }
 
     return true;
+  }
+
+  async createNewComment(input: InsertComment): Promise<{ id: string }> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { data: comment, error } = await this.supabaseClient
+      .from("comment")
+      .insert(input)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      id: comment.id,
+    };
   }
 }

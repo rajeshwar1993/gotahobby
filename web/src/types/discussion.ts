@@ -2,6 +2,11 @@ import { APIResponse } from "./apiTypes";
 import { Entity, TimeStats } from "./generics";
 import { GlanceUser } from "./user";
 
+export enum CommentAccociatedToType {
+  EVENT = "EVENT",
+  GROUP = "GROUP",
+}
+
 export type CommentData = {
   text: string;
 };
@@ -24,4 +29,4 @@ export type Comment = Entity &
   };
 
 export type FetchCommentsResponse = APIResponse<Array<Comment>>;
-export type SaveCommentResponse = APIResponse<Comment>;
+export type SaveCommentResponse = APIResponse<{ id: string }>;
