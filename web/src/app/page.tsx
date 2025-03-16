@@ -1,13 +1,27 @@
 import Hero from "@/components/hero";
-import PopularEvents from "@/components/event-showcase";
-import UpcomingEvents from "@/components/event-showcase";
-import AttendingEvents from "@/components/event-showcase";
+import EventShowcase from "@/components/event-showcase";
+import { getUpcomingEvents, getPopularEvents } from "@/lib/mockApi";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Server-side data fetching
+  const upcomingEvents = await getUpcomingEvents();
+  const popularEvents = await getPopularEvents();
+
   return (
-    <>
+    <div className="space-y-8">
       <Hero />
-      <PopularEvents />
-    </>
+
+      <EventShowcase
+        title="Upcoming Events"
+        events={upcomingEvents}
+        viewAllLink="/events/upcoming"
+      />
+
+      <EventShowcase
+        title="Popular Events"
+        events={popularEvents}
+        viewAllLink="/events/popular"
+      />
+    </div>
   );
 }
