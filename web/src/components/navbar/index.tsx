@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function Navbar() {
   return (
@@ -16,6 +17,7 @@ export default async function Navbar() {
         </div>
 
         <div className="flex items-center space-x-4">
+          <ThemeToggle />
           <Image
             src="/api/placeholder/32/32"
             alt="Profile"
