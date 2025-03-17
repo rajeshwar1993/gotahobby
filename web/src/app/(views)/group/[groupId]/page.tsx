@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { CreateEventButton } from "@/components/create-event-button";
 
 type Group = {
   id: number;
@@ -17,11 +16,6 @@ export default async function GroupPage({
 
   return (
     <div className="container py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Group: {json.title}</h1>
-        <CreateEventButton groupId={"e9cbd152-ef0c-47c7-81e4-adb11168f856"} />
-      </div>
-
       <div className="flex gap-4 mb-8">
         <Link href={"/group/1"} className="underline">
           Group 1

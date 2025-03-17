@@ -153,7 +153,7 @@ export class SupabaseHandler extends DBHandler {
     // Transform the database group object to a client-side Group object
     const group: Group = {
       id: dbGroup.id,
-      createdAtUTC: dbGroup.created_at,
+      created_at: dbGroup.created_at,
       name: dbGroup.title || "",
       coverPicture: bannerImage && bannerImage[0],
       photos,
@@ -469,5 +469,20 @@ export class SupabaseHandler extends DBHandler {
     return {
       id: comment.id,
     };
+  }
+
+  async deleteComment(commentId: string): Promise<void> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { error } = await this.supabaseClient
+      .from("comment")
+      .delete()
+      .eq("id", commentId);
+
+    if (error) {
+      throw error;
+    }
   }
 }

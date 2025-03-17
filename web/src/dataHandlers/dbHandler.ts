@@ -37,4 +37,5 @@ export abstract class DBHandler {
   abstract createNewImage(data: PictureInsert): Promise<boolean>;
   abstract getComemntsByIDs(commentIds: string[]): Promise<Comment[]>;
   abstract createNewComment(data: InsertComment): Promise<{ id: string }>;
+  abstract deleteComment(commentId: string): Promise<void>;
 }

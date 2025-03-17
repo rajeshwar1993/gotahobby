@@ -31,8 +31,8 @@ export async function middleware(request: NextRequest) {
 
     // For frontend routes: Redirect to login page
     if (
-      !request.nextUrl.pathname.startsWith("/login") &&
-      !request.nextUrl.pathname.startsWith("/auth")
+      !request.nextUrl.pathname.startsWith("/auth") &&
+      !pathsToIgnoreAuth.includes(request.nextUrl.pathname)
     ) {
       const url = request.nextUrl.clone();
       url.pathname = "/auth/login";
@@ -43,6 +43,8 @@ export async function middleware(request: NextRequest) {
   // Return the original response if authenticated or for excluded paths
   return response;
 }
+
+const pathsToIgnoreAuth = ["/"];
 
 export const config = {
   matcher: [

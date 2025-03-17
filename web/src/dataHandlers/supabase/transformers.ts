@@ -45,7 +45,7 @@ export function event_DBToObj({
   // 1. Basic entity and time stats transformation
   const basicInfo: Entity & TimeStats = {
     id: dbEvent.id,
-    createdAtUTC: dbEvent.created_at,
+    created_at: dbEvent.created_at,
   };
 
   // 3. Transform bio
