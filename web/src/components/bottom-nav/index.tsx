@@ -38,7 +38,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="container max-w-4xl mx-auto fixed bottom-0 left-0 right-0 border-t sm:border bg-background pb-safe-area">
+    <div className="container max-w-4xl mx-auto fixed bottom-0 left-0 right-0 border-t sm:border border-primary-100 dark:border-primary-900 bg-background/80 backdrop-blur-md pb-safe-area z-[1]">
       <nav className="flex items-center justify-around px-4 py-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
@@ -47,8 +47,10 @@ export default function BottomNav() {
               <Button
                 variant="ghost"
                 className={cn(
-                  "w-full flex flex-col items-center gap-1 py-2 h-auto",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  "w-full flex flex-col items-center gap-1 py-2 h-auto transition-colors",
+                  isActive
+                    ? "text-primary bg-primary-50 dark:bg-primary-900/30"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20"
                 )}
               >
                 <item.icon className="h-5 w-5" />

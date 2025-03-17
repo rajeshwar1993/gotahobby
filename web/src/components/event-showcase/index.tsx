@@ -52,46 +52,56 @@ export default function EventShowcase({
 
   return (
     <section
-      className="space-y-6 py-8"
+      className="space-y-8 py-12"
       aria-labelledby={`${title.toLowerCase().replace(/\s+/g, "-")}-heading`}
     >
       <div className="flex items-center justify-between">
         <h2
           id={`${title.toLowerCase().replace(/\s+/g, "-")}-heading`}
-          className="text-2xl font-semibold"
+          className="text-2xl font-bold text-foreground relative"
         >
           {title}
+          <span className="absolute -bottom-2 left-0 w-16 h-1 bg-primary rounded-full"></span>
         </h2>
         {hasMoreEvents && (
-          <Button variant="link" asChild>
-            <Link href={viewAllLink}>View All →</Link>
+          <Button
+            variant="link"
+            asChild
+            className="text-primary hover:text-primary-700 dark:hover:text-primary-300"
+          >
+            <Link href={viewAllLink}>
+              View All <span aria-hidden="true">→</span>
+            </Link>
           </Button>
         )}
       </div>
 
       {/* Responsive event display */}
       <div className="space-y-6 lg:space-y-0">
-        {/* Desktop: Horizontal scrollable gallery */}
-        <div className="hidden lg:block overflow-x-auto pb-4">
+        {/* Desktop: Improved horizontal scrollable gallery */}
+        <div className="hidden lg:block overflow-x-auto pb-4 -mx-4 px-4">
           <div className="flex gap-6 min-w-max">
             {loading
               ? // Skeleton loading state
                 Array(5)
                   .fill(0)
                   .map((_, i) => (
-                    <div key={i} className="w-[300px]">
+                    <div key={i} className="w-[320px]">
                       <EventCardSkeleton />
                     </div>
                   ))
               : displayEvents.map((event, index) => (
-                  <div className="w-[300px]" key={index}>
+                  <div
+                    className="w-[320px] transition-all hover:-translate-y-1 duration-300"
+                    key={index}
+                  >
                     <EventCard {...event} />
                   </div>
                 ))}
           </div>
         </div>
 
-        {/* Mobile: Vertical stack */}
+        {/* Mobile: Improved vertical stack */}
         <div className="block lg:hidden space-y-6">
           {loading
             ? // Skeleton loading state
@@ -99,7 +109,12 @@ export default function EventShowcase({
                 .fill(0)
                 .map((_, i) => <EventCardSkeleton key={i} />)
             : displayEvents.map((event, index) => (
-                <EventCard key={index} {...event} />
+                <div
+                  className="transition-all hover:-translate-y-1 duration-300"
+                  key={index}
+                >
+                  <EventCard key={index} {...event} />
+                </div>
               ))}
         </div>
       </div>

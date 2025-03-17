@@ -3,29 +3,46 @@ import { CalendarPlus, Users } from "lucide-react";
 
 export default function Hero() {
   return (
-    <div className="relative rounded-lg overflow-hidden">
-      {/* Hero image - responsive height */}
-      <div className="h-[300px] lg:h-[500px] bg-[url('https://picsum.photos/id/76/1500/1500')] bg-cover bg-center" />
+    <div className="relative rounded-xl overflow-hidden">
+      {/* Gradient overlay for the hero image */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary-900/80 to-primary-700/40 z-10" />
 
-      {/* Content container - below image on mobile, overlay on desktop */}
-      <div className="p-6 space-y-6 bg-background lg:absolute lg:inset-0 lg:bg-black/60">
-        <div className="lg:h-full lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
-          <h2 className="text-3xl lg:text-5xl font-bold mb-6 lg:text-white">
-            Discover Your Next Passion
-          </h2>
+      {/* Hero image with parallax effect */}
+      <div
+        className="h-[400px] lg:h-[600px] bg-cover bg-center transform transition-transform duration-700 hover:scale-105"
+        style={{
+          backgroundImage: `url('https://picsum.photos/id/76/1500/1500')`,
+        }}
+      />
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="flex items-center gap-2">
-              <CalendarPlus className="h-5 w-5" aria-hidden="true" />
+      {/* Content with improved typography and positioning */}
+      <div className="absolute inset-0 z-20 flex items-center justify-center text-center px-4">
+        <div className="max-w-3xl space-y-6">
+          <h1 className="text-4xl lg:text-6xl font-bold text-white drop-shadow-md">
+            Discover Your Next <span className="text-primary-100">Passion</span>
+          </h1>
+
+          <p className="text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
+            Connect with like-minded enthusiasts and explore exciting new
+            hobbies
+          </p>
+
+          {/* Modern CTA buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary-600 text-white rounded-full px-8 shadow-lg"
+            >
+              <CalendarPlus className="h-5 w-5 mr-2" aria-hidden="true" />
               <span>Join Event</span>
             </Button>
 
             <Button
               size="lg"
               variant="outline"
-              className="flex items-center gap-2 lg:text-white lg:border-white lg:hover:bg-white/20 lg:hover:text-white"
+              className="border-white text-white hover:bg-white/20 rounded-full px-8 backdrop-blur-sm"
             >
-              <Users className="h-5 w-5" aria-hidden="true" />
+              <Users className="h-5 w-5 mr-2" aria-hidden="true" />
               <span>Host Event</span>
             </Button>
           </div>

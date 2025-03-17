@@ -26,23 +26,23 @@ export default function EventCard({
   action = "View Details",
 }: EventCardProps) {
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
+    <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-lg border-0 dark:bg-primary-900/10 group">
       {/* Card container with responsive layout */}
       <div className="lg:block flex h-full">
-        {/* Image container - full width on desktop, 1/3 width on mobile */}
-        <div className="lg:w-full w-1/3 relative">
+        {/* Image container with hover effect */}
+        <div className="lg:w-full w-1/3 relative overflow-hidden">
           {/* Desktop: aspect-video, Mobile: full height */}
           <div className="lg:aspect-video lg:relative lg:w-full h-full">
             <div
-              className="lg:absolute inset-0 bg-cover bg-center h-full"
+              className="lg:absolute inset-0 bg-cover bg-center h-full transition-transform duration-500 group-hover:scale-110"
               style={{ backgroundImage: `url(${image})` }}
               aria-hidden="true"
             />
             {status && (
               <span
-                className={`absolute top-2 right-2 px-2 py-1 rounded text-xs lg:text-sm ${
-                  status === "Confirmed" ? "bg-green-500" : "bg-yellow-500"
-                } text-white`}
+                className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium ${
+                  status === "Confirmed" ? "bg-green-500/90" : "bg-amber-500/90"
+                } text-white backdrop-blur-sm`}
               >
                 {status}
               </span>
@@ -50,47 +50,44 @@ export default function EventCard({
           </div>
         </div>
 
-        {/* Content container - full width on desktop, 2/3 width on mobile */}
-        <div className="lg:w-full w-2/3 p-4 space-y-3 lg:space-y-4 flex flex-col">
-          {/* Date/time info */}
-          <div className="flex items-center space-x-2 text-xs lg:text-sm text-muted-foreground">
-            <CalendarDays
-              className="h-3 w-3 lg:h-4 lg:w-4"
-              aria-hidden="true"
-            />
+        {/* Content container with improved spacing and typography */}
+        <div className="lg:w-full w-2/3 p-5 space-y-4 flex flex-col">
+          {/* Date/time with subtle styling */}
+          <div className="flex items-center text-sm text-primary-600 dark:text-primary-300">
+            <CalendarDays className="h-4 w-4 mr-2" aria-hidden="true" />
             <span>{date}</span>
-            <Clock
-              className="h-3 w-3 lg:h-4 lg:w-4 ml-1 lg:ml-2"
-              aria-hidden="true"
-            />
+            <span className="mx-2">•</span>
+            <Clock className="h-4 w-4 mr-2" aria-hidden="true" />
             <span>{time}</span>
           </div>
 
-          {/* Title - different size based on viewport */}
-          <h3 className="font-semibold text-base lg:text-lg">{title}</h3>
+          {/* Title with hover effect */}
+          <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+            {title}
+          </h3>
 
-          {/* Location */}
-          <div className="flex items-center space-x-2 text-xs lg:text-sm text-muted-foreground">
-            <MapPin className="h-3 w-3 lg:h-4 lg:w-4" aria-hidden="true" />
+          {/* Location with subtle styling */}
+          <div className="flex items-center text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4 mr-2" aria-hidden="true" />
             <span>{location}</span>
           </div>
 
-          {/* Price and attendees - pushed to bottom on desktop */}
-          <div className="flex items-center justify-between lg:mt-auto">
-            <span className="font-semibold text-sm lg:text-base">
+          {/* Price and attendees with improved styling */}
+          <div className="flex items-center justify-between pt-2 lg:mt-auto">
+            <span className="font-semibold text-primary-700 dark:text-primary-300">
               {price === "Free" ? "Free" : `$${price}`}
             </span>
             {attendees && (
-              <span className="text-xs lg:text-sm text-muted-foreground">
+              <span className="text-sm bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-2 py-1 rounded-full">
                 +{attendees} attending
               </span>
             )}
           </div>
 
-          {/* Button - only shown on desktop */}
+          {/* Button with improved styling */}
           <Button
-            className="w-full mt-2 hidden lg:block"
-            variant={action === "Join Event" ? "default" : "outline"}
+            className="w-full mt-2 hidden lg:block rounded-full bg-primary-50 hover:bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 dark:hover:bg-primary-800/50"
+            variant="outline"
           >
             {action}
           </Button>
