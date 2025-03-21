@@ -1,3 +1,3 @@
 export const createPath = (path: string) => {
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/${path}`;
+  return `${process.env.NEXT_PUBLIC_BASE_URL}/${path}`;
 };
