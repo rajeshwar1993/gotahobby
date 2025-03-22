@@ -14,26 +14,5 @@ export default async function GroupPage({
   const response = await fetch(`http://localhost:3000/api/groups/${id}`);
   const json: Group = await response.json();
 
-  return (
-    <div className="container py-8">
-      <div className="flex gap-4 mb-8">
-        <Link href={"/group/1"} className="underline">
-          Group 1
-        </Link>
-        <Link href={"/group/2"} className="underline">
-          Group 2
-        </Link>
-        <Link href={"/group/3"} className="underline">
-          Group 3
-        </Link>
-      </div>
-
-      <div className="bg-muted/40 p-8 rounded-lg text-center">
-        <p className="text-muted-foreground">No events in this group yet.</p>
-        <p className="text-muted-foreground">
-          Create a new event to get started!
-        </p>
-      </div>
-    </div>
-  );
+  return <div className="container py-8"></div>;
 }
