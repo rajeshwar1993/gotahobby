@@ -37,7 +37,7 @@ export default async function RootLayout({
       >
         <ThemeProvider>
           <Navbar />
-          <main className="bg-background container max-w-7xl mx-auto px-4 pb-24 pt-8">
+          <main className="bg-background container max-w-7xl mx-auto px-4 pb-24 pt-4">
             {children}
           </main>
           <BottomNav />
