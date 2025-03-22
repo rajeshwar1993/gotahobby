@@ -4,8 +4,10 @@ import {
   UsersIcon,
   ShareIcon,
   ExternalLinkIcon,
+  PencilIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Gallery } from "@/components/image-gallery";
 import { Group, Comment } from "@/types";
@@ -152,17 +154,24 @@ const EventsSection = ({ events }: { events: Group["events"] }) => (
   </section>
 );
 
-// Sticky Join Button Component
-const StickyJoinButton = ({ group }: { group: Group }) => (
+// Sticky Actions Component
+const StickyActions = ({ group }: { group: Group }) => (
   <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 shadow-lg z-40">
     <div className="mx-auto max-w-4xl flex justify-between items-center">
       <div className="flex items-center gap-4">
         <span className="text-lg font-semibold">
           {group.memberCount} members
         </span>
-        <Button variant="outline" size="icon" aria-label="Share group">
-          <ShareIcon className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="icon" aria-label="Share group">
+            <ShareIcon className="h-4 w-4" />
+          </Button>
+          <Link href="/group/create" passHref>
+            <Button variant="outline" size="sm" className="gap-1">
+              Create Group
+            </Button>
+          </Link>
+        </div>
       </div>
       <Button size="lg" className="w-40" aria-label="Join group">
         Join Group
@@ -197,19 +206,29 @@ const GroupPage = async ({
         </section>
 
         <section className="mb-8">
-          <h1 className="text-2xl md:text-4xl font-bold text-foreground">
-            {group.name}
-          </h1>
-          {/* TAG SECTION */}
-          <div className="flex gap-2 mt-2">
-            {group.tags.map((tag) => (
-              <span
-                key={tag.id}
-                className="bg-muted text-muted-foreground px-2 py-1 rounded-md text-sm"
-              >
-                {tag.value}
-              </span>
-            ))}
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-2xl md:text-4xl font-bold text-foreground">
+                {group.name}
+              </h1>
+              {/* TAG SECTION */}
+              <div className="flex gap-2 mt-2">
+                {group.tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className="bg-muted text-muted-foreground px-2 py-1 rounded-md text-sm"
+                  >
+                    {tag.value}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <Link href={`/group/${group.id}/edit`} passHref>
+              <Button variant="outline" size="sm" className="gap-1">
+                <PencilIcon className="h-4 w-4" />
+                Edit
+              </Button>
+            </Link>
           </div>
         </section>
         <div className="flex flex-col md:flex-row justify-between gap-8 mb-6">
@@ -287,8 +306,8 @@ const GroupPage = async ({
           </section>
         )}
 
-        {/* Sticky Join Button */}
-        <StickyJoinButton group={group} />
+        {/* Sticky Actions */}
+        <StickyActions group={group} />
       </div>
     );
   } catch (error) {
